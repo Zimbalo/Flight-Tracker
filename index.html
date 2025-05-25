@@ -416,19 +416,6 @@
             text-align: center;
         }
 
-        .flight-path {
-            stroke: #3498db;
-            stroke-width: 3;
-            fill: none;
-            stroke-dasharray: 10, 5;
-            animation: pathDraw 2s ease-in-out;
-        }
-
-        @keyframes pathDraw {
-            from { stroke-dashoffset: 100; }
-            to { stroke-dashoffset: 0; }
-        }
-
         @media (max-width: 1024px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -547,7 +534,7 @@
     <script>
         // Configurazione
         const NETLIFY_FUNCTION_URL = '/.netlify/functions/flight-search';
-        const OPENSKY_API = 'https://opensky-network.org/api';
+        const OPENSKY_FUNCTION_URL = '/.netlify/functions/opensky-search';
         
         let currentFlight = null;
         let map = null;
@@ -589,17 +576,11 @@
                 touchZoom: true
             }).setView([45.0, 10.0], 4);
 
-            // Tile layer con stile satellite/terrain
+            // Tile layer con OpenStreetMap
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap contributors',
                 maxZoom: 18
             }).addTo(map);
-
-            // Stile alternativo satellite (commentato, puoi testarlo)
-            // L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-            //     attribution: '© Esri',
-            //     maxZoom: 18
-            // }).addTo(map);
         }
 
         // Crea icona aereo personalizzata
@@ -622,6 +603,55 @@
             });
         }
 
+        // Database coordinate aeroporti (esteso)
+        const airportCoords = {
+            // Europa
+            'LHR': [51.4700, -0.4543],   // London Heathrow
+            'CDG': [49.0097, 2.5479],    // Paris Charles de Gaulle
+            'FRA': [50.0375, 8.5622],    // Frankfurt
+            'AMS': [52.3105, 4.7683],    // Amsterdam Schiphol
+            'FCO': [41.8003, 12.2389],   // Roma Fiumicino
+            'MXP': [45.6306, 8.7231],    // Milano Malpensa
+            'BCN': [41.2974, 2.0833],    // Barcelona
+            'MAD': [40.4839, -3.5680],   // Madrid
+            'BER': [52.3667, 13.5033],   // Berlin
+            'MUC': [48.3538, 11.7861],   // Munich
+            'ZUR': [47.4647, 8.5492],    // Zurich
+            'VIE': [48.1103, 16.5697],   // Vienna
+            
+            // Nord America  
+            'JFK': [40.6413, -73.7781],  // New York JFK
+            'LAX': [33.9428, -118.4081], // Los Angeles
+            'ORD': [41.9742, -87.9073],  // Chicago O'Hare
+            'DFW': [32.8998, -97.0403],  // Dallas Fort Worth
+            'ATL': [33.6407, -84.4277],  // Atlanta
+            'LAS': [36.0840, -115.1537], // Las Vegas
+            'MIA': [25.7959, -80.2870],  // Miami
+            'SFO': [37.6213, -122.3790], // San Francisco
+            'SEA': [47.4502, -122.3088], // Seattle
+            'YYZ': [43.6777, -79.6248],  // Toronto
+            
+            // Asia
+            'NRT': [35.7720, 140.3929],  // Tokyo Narita
+            'HND': [35.5494, 139.7798],  // Tokyo Haneda
+            'ICN': [37.4602, 126.4407],  // Seoul Incheon
+            'PVG': [31.1443, 121.8083],  // Shanghai Pudong
+            'PEK': [40.0799, 116.6031],  // Beijing Capital
+            'SIN': [1.3644, 103.9915],   // Singapore
+            'HKG': [22.3080, 113.9185],  // Hong Kong
+            'BKK': [13.6900, 100.7501],  // Bangkok
+            'DXB': [25.2532, 55.3657],   // Dubai
+            'DOH': [25.2731, 51.6078],   // Doha
+            
+            // Altri importanti
+            'SYD': [-33.9399, 151.1753], // Sydney
+            'MEL': [-37.6690, 144.8410], // Melbourne
+            'JNB': [-26.1367, 28.2411],  // Johannesburg
+            'CAI': [30.1127, 31.4000],   // Cairo
+            'IST': [41.2619, 28.7278],   // Istanbul
+            'MOW': [55.9726, 37.4146],   // Moscow
+        };
+
         // Aggiorna mappa con dati volo
         function updateMap(flight, liveData = null) {
             if (!map) initMap();
@@ -630,34 +660,31 @@
             if (planeMarker) map.removeLayer(planeMarker);
             if (flightPath) map.removeLayer(flightPath);
 
-            // Coordinate aeroporti (approssimate per demo)
-            const airportCoords = {
-                'JFK': [40.6413, -73.7781],
-                'LHR': [51.4700, -0.4543],
-                'FRA': [50.0375, 8.5622],
-                'FCO': [41.8003, 12.2389],
-                'CDG': [49.0097, 2.5479],
-                'AMS': [52.3105, 4.7683],
-                'MXP': [45.6306, 8.7231],
-                'BCN': [41.2974, 2.0833],
-                'MAD': [40.4839, -3.5680],
-                'BER': [52.3667, 13.5033]
-            };
-
             const departureCode = flight.departure?.iata;
             const arrivalCode = flight.arrival?.iata;
             
-            let departureCoords = airportCoords[departureCode] || [0, 0];
-            let arrivalCoords = airportCoords[arrivalCode] || [0, 0];
+            let departureCoords = airportCoords[departureCode];
+            let arrivalCoords = airportCoords[arrivalCode];
+
+            // Fallback a coordinate approssimate se non trovate
+            if (!departureCoords) {
+                console.log(`Coordinate non trovate per aeroporto: ${departureCode}`);
+                departureCoords = [40.0, 0.0]; // Coordinate di default
+            }
+            
+            if (!arrivalCoords) {
+                console.log(`Coordinate non trovate per aeroporto: ${arrivalCode}`);
+                arrivalCoords = [50.0, 10.0]; // Coordinate di default
+            }
 
             // Marker aeroporti
-            if (departureCode && airportCoords[departureCode]) {
+            if (departureCode && departureCoords) {
                 L.marker(departureCoords, { icon: createAirportMarker() })
                     .addTo(map)
                     .bindPopup(`<b>${departureCode}</b><br>${flight.departure?.airport || 'Aeroporto di partenza'}`);
             }
 
-            if (arrivalCode && airportCoords[arrivalCode]) {
+            if (arrivalCode && arrivalCoords) {
                 L.marker(arrivalCoords, { icon: createAirportMarker() })
                     .addTo(map)
                     .bindPopup(`<b>${arrivalCode}</b><br>${flight.arrival?.airport || 'Aeroporto di arrivo'}`);
@@ -694,7 +721,7 @@
             `);
 
             // Path di volo (linea tratteggiata)
-            if (departureCoords[0] !== 0 && arrivalCoords[0] !== 0) {
+            if (departureCoords && arrivalCoords) {
                 const pathPoints = [departureCoords, planeCoords, arrivalCoords];
                 flightPath = L.polyline(pathPoints, {
                     color: '#3498db',
@@ -707,10 +734,19 @@
             // Zoom sulla vista ottimale
             const bounds = L.latLngBounds([departureCoords, arrivalCoords, planeCoords]);
             map.fitBounds(bounds, { padding: [20, 20] });
+
+            console.log('Mappa aggiornata:', {
+                departure: departureCode,
+                arrival: arrivalCode,
+                planePosition: planeCoords,
+                hasLiveData: !!liveData
+            });
         }
 
         // Calcola heading tra due punti
         function calculateHeading(from, to) {
+            if (!from || !to) return 90;
+            
             const dLon = (to[1] - from[1]) * Math.PI / 180;
             const lat1 = from[0] * Math.PI / 180;
             const lat2 = to[0] * Math.PI / 180;
@@ -722,27 +758,38 @@
             return (heading + 360) % 360;
         }
 
-        // Ottieni dati live da OpenSky
+        // Ottieni dati live da OpenSky tramite Netlify Function
         async function getLiveFlightData(icao24) {
             try {
-                const response = await fetch(`${OPENSKY_API}/states/all?icao24=${icao24}`);
-                const data = await response.json();
+                const url = `${OPENSKY_FUNCTION_URL}?icao24=${icao24}`;
+                console.log('Chiamando OpenSky Function:', url);
                 
-                if (data.states && data.states.length > 0) {
-                    const state = data.states[0];
+                const response = await fetch(url);
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(result.error || `HTTP Error: ${response.status}`);
+                }
+                
+                if (result.success && result.data) {
+                    const state = result.data;
+                    console.log('Dati OpenSky ricevuti:', state);
+                    
                     return {
-                        icao24: state[0],
-                        callsign: state[1]?.trim(),
-                        longitude: state[5],
-                        latitude: state[6],
-                        altitude: state[7],
-                        speed_horizontal: state[9] ? Math.round(state[9] * 3.6) : null, // m/s to km/h
-                        heading: state[10]
+                        icao24: state.icao24,
+                        callsign: state.callsign,
+                        longitude: state.longitude,
+                        latitude: state.latitude,
+                        altitude: state.baro_altitude,
+                        speed_horizontal: state.velocity ? Math.round(state.velocity * 3.6) : null, // m/s to km/h
+                        heading: state.true_track
                     };
                 }
+                
+                console.log('Nessun dato live trovato per:', icao24);
                 return null;
             } catch (error) {
-                console.error('Errore OpenSky:', error);
+                console.error('Errore OpenSky Function:', error);
                 return null;
             }
         }
@@ -920,15 +967,19 @@
             monitorSection.style.display = 'none';
             
             try {
+                console.log('Cercando volo:', flightCode);
+                
                 // Ottieni dati da AviationStack
                 const flight = await getFlightByIATA(flightCode.toUpperCase());
                 
                 if (flight) {
                     currentFlight = flight;
+                    console.log('Volo trovato:', flight);
                     
                     // Prova a ottenere dati live da OpenSky se disponibile ICAO24
                     let liveData = null;
                     if (flight.aircraft?.icao24) {
+                        console.log('Tentativo recupero dati live per:', flight.aircraft.icao24);
                         liveData = await getLiveFlightData(flight.aircraft.icao24);
                     }
                     
@@ -958,6 +1009,7 @@
                     showError(`Volo "${flightCode}" non trovato. Verifica il codice e riprova.`);
                 }
             } catch (error) {
+                console.error('Errore nella ricerca:', error);
                 showError(error.message || 'Errore durante la ricerca del volo');
             } finally {
                 loading.style.display = 'none';
@@ -992,6 +1044,8 @@
             
             monitoringInterval = setInterval(async () => {
                 try {
+                    console.log('Aggiornamento monitoraggio...');
+                    
                     // Prova prima OpenSky per dati live (gratuito)
                     let liveData = null;
                     if (currentFlight.aircraft?.icao24) {
