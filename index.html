@@ -5,11 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SkyTracker - Flight Tracking App</title>
     
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Traccia i tuoi voli in tempo reale con informazioni meteo, distanze e fusi orari. App PWA installabile con dark mode.">
+    <meta name="keywords" content="flight tracker, voli, tracking, meteo, viaggio, PWA">
+    <meta name="author" content="SkyTracker">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://graceful-fenglisu-bb5c95.netlify.app/">
+    <meta property="og:title" content="SkyTracker - Flight Tracking App">
+    <meta property="og:description" content="Traccia i tuoi voli in tempo reale con informazioni meteo, distanze e fusi orari. App PWA installabile con dark mode.">
+    <meta property="og:image" content="https://graceful-fenglisu-bb5c95.netlify.app/og-image.jpg">
+    <meta property="og:image:width" content="1680">
+    <meta property="og:image:height" content="1050">
+    <meta property="og:image:alt" content="SkyTracker - App per il tracking dei voli in tempo reale">
+    <meta property="og:site_name" content="SkyTracker">
+    <meta property="og:locale" content="it_IT">
+    
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://graceful-fenglisu-bb5c95.netlify.app/">
+    <meta name="twitter:title" content="SkyTracker - Flight Tracking App">
+    <meta name="twitter:description" content="Traccia i tuoi voli in tempo reale con informazioni meteo, distanze e fusi orari. App PWA installabile con dark mode.">
+    <meta name="twitter:image" content="https://graceful-fenglisu-bb5c95.netlify.app/og-image.jpg">
+    <meta name="twitter:image:alt" content="SkyTracker - App per il tracking dei voli in tempo reale">
+    
+    <!-- LinkedIn -->
+    <meta property="og:image:type" content="image/jpeg">
+    
+    <!-- WhatsApp / Telegram -->
+    <meta property="og:image:secure_url" content="https://graceful-fenglisu-bb5c95.netlify.app/og-image.jpg">
+    
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#667eea">
-    <meta name="description" content="Traccia i tuoi voli con info meteo e viaggio in tempo reale">
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon-192x192.png">
+    <link rel="manifest" href="./manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="SkyTracker">
@@ -798,7 +828,7 @@
             console.log('Service Worker not supported or not on HTTPS');
         }
 
-        // Existing functions (keep all the previous flight tracking logic)
+        // Crea stelle animate
         function createStars() {
             const starsContainer = document.getElementById('stars');
             for (let i = 0; i < 100; i++) {
@@ -811,12 +841,14 @@
             }
         }
 
+        // Inizializza le icone Lucide
         function initLucide() {
             if (typeof lucide !== 'undefined') {
                 lucide.createIcons();
             }
         }
 
+        // Ottieni meteo per coordinate
         async function getWeatherData(lat, lon, cityName) {
             return {
                 city: cityName,
@@ -828,6 +860,7 @@
             };
         }
 
+        // Calcola distanza tra due punti
         function calculateDistance(lat1, lon1, lat2, lon2) {
             const R = 6371;
             const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -839,6 +872,7 @@
             return Math.round(R * c);
         }
 
+        // Calcola durata volo stimata
         function calculateFlightDuration(distance) {
             const avgSpeed = 850;
             const hours = distance / avgSpeed;
@@ -847,6 +881,7 @@
             return `${h}h ${m}m`;
         }
 
+        // Ottieni orario locale
         function getLocalTime(timezone) {
             try {
                 return new Date().toLocaleTimeString('it-IT', {
@@ -859,6 +894,7 @@
             }
         }
 
+        // Funzione per ottenere informazioni volo
         async function getFlightByIATA(flightIATA) {
             try {
                 const url = `${NETLIFY_FUNCTION_URL}?flight_iata=${encodeURIComponent(flightIATA)}`;
@@ -880,6 +916,7 @@
             }
         }
 
+        // Formatta data/ora
         function formatDateTime(dateString) {
             if (!dateString) return 'N/A';
             try {
@@ -895,6 +932,7 @@
             }
         }
 
+        // Ottieni classe CSS per status
         function getStatusClass(status) {
             const statusMap = {
                 'active': 'status-active',
@@ -905,6 +943,7 @@
             return statusMap[status] || 'status-scheduled';
         }
 
+        // Traduci status
         function translateStatus(status) {
             const translations = {
                 'active': 'In Volo',
@@ -916,6 +955,7 @@
             return translations[status] || status;
         }
 
+        // Renderizza meteo
         function renderWeather(departureWeather, arrivalWeather, depCode, arrCode) {
             if (!departureWeather && !arrivalWeather) return '';
             
@@ -949,6 +989,7 @@
             `;
         }
 
+        // Renderizza info viaggio
         function renderTravelInfo(flight, distance, duration, depInfo, arrInfo) {
             return `
                 <div class="info-section">
@@ -997,6 +1038,7 @@
             `;
         }
 
+        // Renderizza risultato volo completo
         async function renderFlightResult(flight) {
             const hasLiveData = flight.live && (flight.live.latitude || flight.live.longitude);
             
@@ -1005,6 +1047,7 @@
             const depInfo = airportCoords[depCode];
             const arrInfo = airportCoords[arrCode];
 
+            // Calcola info viaggio
             let distance = 0;
             let duration = 'N/A';
             if (depInfo && arrInfo) {
@@ -1012,6 +1055,7 @@
                 duration = calculateFlightDuration(distance);
             }
 
+            // Ottieni dati meteo (simulati per demo)
             let departureWeather = null;
             let arrivalWeather = null;
             
@@ -1118,6 +1162,7 @@
             `;
         }
 
+        // Mostra errore
         function showError(message) {
             document.getElementById('results').innerHTML = `
                 <div class="error-message">
@@ -1128,6 +1173,7 @@
             initLucide();
         }
 
+        // Ricerca volo
         async function searchFlight(flightCode) {
             const loading = document.getElementById('loading');
             const results = document.getElementById('results');
@@ -1155,6 +1201,7 @@
             }
         }
 
+        // Monitoraggio intelligente
         function startMonitoring() {
             if (!currentFlight) return;
             
