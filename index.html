@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SkyTracker - Flight Tracking App</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         * {
             margin: 0;
@@ -49,7 +47,7 @@
         .container {
             position: relative;
             z-index: 1;
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
             min-height: 100vh;
@@ -57,8 +55,8 @@
 
         .header {
             text-align: center;
-            margin-bottom: 30px;
-            padding: 30px 0;
+            margin-bottom: 40px;
+            padding: 40px 0;
         }
 
         .logo {
@@ -66,7 +64,7 @@
             align-items: center;
             justify-content: center;
             gap: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .logo-icon {
@@ -83,7 +81,7 @@
         }
 
         .title {
-            font-size: 3em;
+            font-size: 3.5em;
             font-weight: 800;
             background: linear-gradient(45deg, #fff, #f0f8ff);
             -webkit-background-clip: text;
@@ -95,7 +93,7 @@
 
         .subtitle {
             color: rgba(255, 255, 255, 0.8);
-            font-size: 1.2em;
+            font-size: 1.3em;
             font-weight: 300;
         }
 
@@ -103,8 +101,8 @@
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(20px);
             border-radius: 25px;
-            padding: 25px;
-            margin-bottom: 25px;
+            padding: 30px;
+            margin-bottom: 30px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
@@ -124,7 +122,7 @@
 
         .search-input {
             width: 100%;
-            padding: 15px 20px;
+            padding: 18px 20px;
             border: 2px solid rgba(255, 255, 255, 0.2);
             border-radius: 15px;
             background: rgba(255, 255, 255, 0.1);
@@ -146,7 +144,7 @@
         }
 
         .search-btn {
-            padding: 15px 25px;
+            padding: 18px 30px;
             background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
             border: none;
             border-radius: 15px;
@@ -166,20 +164,24 @@
             box-shadow: 0 15px 40px rgba(238, 90, 111, 0.6);
         }
 
+        .search-btn:active {
+            transform: translateY(-1px);
+        }
+
         .loading {
             display: none;
             text-align: center;
-            padding: 30px;
+            padding: 40px;
         }
 
         .spinner {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             border: 3px solid rgba(255, 255, 255, 0.3);
             border-top: 3px solid white;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
+            margin: 0 auto 20px;
         }
 
         @keyframes spin {
@@ -187,41 +189,17 @@
             100% { transform: rotate(360deg); }
         }
 
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-            align-items: start;
-        }
-
-        .flight-info {
+        .flight-card {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 25px;
-            padding: 25px;
+            padding: 30px;
+            margin-bottom: 20px;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             transform: translateY(20px);
             opacity: 0;
             animation: slideUp 0.6s ease forwards;
-        }
-
-        .map-container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 25px;
-            padding: 20px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            height: 500px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        #map {
-            height: 100%;
-            width: 100%;
-            border-radius: 15px;
         }
 
         @keyframes slideUp {
@@ -235,21 +213,21 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             flex-wrap: wrap;
             gap: 15px;
         }
 
         .flight-number {
-            font-size: 1.6em;
+            font-size: 1.8em;
             font-weight: 700;
             color: #2c3e50;
         }
 
         .status-badge {
-            padding: 6px 14px;
+            padding: 8px 16px;
             border-radius: 20px;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             text-transform: uppercase;
         }
@@ -262,9 +240,9 @@
         .flight-route {
             display: grid;
             grid-template-columns: 1fr auto 1fr;
-            gap: 15px;
+            gap: 20px;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .airport {
@@ -272,7 +250,7 @@
         }
 
         .airport-code {
-            font-size: 1.8em;
+            font-size: 2.2em;
             font-weight: 800;
             color: #2c3e50;
             margin-bottom: 5px;
@@ -280,12 +258,12 @@
 
         .airport-name {
             color: #7f8c8d;
-            font-size: 13px;
-            margin-bottom: 8px;
+            font-size: 14px;
+            margin-bottom: 10px;
         }
 
         .time {
-            font-size: 1em;
+            font-size: 1.1em;
             font-weight: 600;
             color: #34495e;
         }
@@ -302,10 +280,10 @@
 
         .flight-details {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
             background: rgba(52, 152, 219, 0.1);
-            padding: 15px;
+            padding: 20px;
             border-radius: 15px;
         }
 
@@ -315,15 +293,15 @@
 
         .detail-label {
             color: #7f8c8d;
-            font-size: 11px;
+            font-size: 12px;
             text-transform: uppercase;
             font-weight: 600;
-            margin-bottom: 4px;
+            margin-bottom: 5px;
         }
 
         .detail-value {
             color: #2c3e50;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 600;
         }
 
@@ -335,38 +313,27 @@
             border-radius: 15px;
             text-align: center;
             margin-bottom: 20px;
-            grid-column: 1 / -1;
         }
 
         .monitor-section {
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(20px);
             border-radius: 25px;
-            padding: 20px;
+            padding: 25px;
             margin-top: 20px;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            grid-column: 1 / -1;
-        }
-
-        .monitor-controls {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
         }
 
         .monitor-btn {
             background: linear-gradient(45deg, #00b894, #00cec9);
             border: none;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border-radius: 12px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            margin-right: 10px;
         }
 
         .monitor-btn:hover {
@@ -408,56 +375,13 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
-        .map-title {
-            color: #2c3e50;
-            font-size: 1.1em;
-            font-weight: 600;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        @media (max-width: 1024px) {
-            .main-content {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .map-container {
-                height: 400px;
-            }
-        }
-
         @media (max-width: 768px) {
             .title { font-size: 2.5em; }
             .search-form { flex-direction: column; }
             .search-btn { width: 100%; justify-content: center; }
             .flight-route { grid-template-columns: 1fr; gap: 15px; }
             .plane-icon { transform: rotate(90deg); }
-            .flight-details { grid-template-columns: 1fr 1fr; }
-            .monitor-controls { justify-content: center; }
-        }
-
-        /* Stili personalizzati per la mappa */
-        .leaflet-popup-content {
-            text-align: center;
-            font-family: inherit;
-        }
-
-        .plane-marker {
-            font-size: 24px;
-            color: #3498db;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            transition: all 0.3s ease;
-        }
-
-        .airport-marker {
-            background: #e74c3c;
-            color: white;
-            border-radius: 50%;
-            width: 12px;
-            height: 12px;
-            border: 2px solid white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            .flight-details { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -468,11 +392,11 @@
         <header class="header">
             <div class="logo">
                 <div class="logo-icon">
-                    <i data-lucide="plane" size="35" color="white"></i>
+                    <i data-lucide="plane" size="40" color="white"></i>
                 </div>
             </div>
             <h1 class="title">SkyTracker</h1>
-            <p class="subtitle">Traccia i tuoi voli in tempo reale con mappa interattiva</p>
+            <p class="subtitle">Traccia i tuoi voli in tempo reale con stile</p>
         </header>
 
         <div class="search-container">
@@ -487,7 +411,7 @@
                     >
                 </div>
                 <button type="submit" class="search-btn">
-                    <i data-lucide="search" size="18"></i>
+                    <i data-lucide="search" size="20"></i>
                     Cerca Volo
                 </button>
             </form>
@@ -498,55 +422,36 @@
             <p style="color: white; font-size: 1.1em;">Cercando il tuo volo...</p>
         </div>
 
-        <div class="main-content" id="mainContent" style="display: none;">
-            <div class="flight-info" id="flightInfo">
-                <!-- Info volo qui -->
-            </div>
-            
-            <div class="map-container">
-                <div class="map-title">
-                    <i data-lucide="map" size="18" style="vertical-align: middle; margin-right: 8px;"></i>
-                    Tracking Live
-                </div>
-                <div id="map"></div>
-            </div>
-        </div>
+        <div id="results"></div>
 
         <div class="monitor-section" id="monitorSection" style="display: none;">
             <h3 style="color: white; margin-bottom: 15px;">
-                <i data-lucide="radio" size="18" style="vertical-align: middle; margin-right: 8px;"></i>
+                <i data-lucide="radio" size="20" style="vertical-align: middle; margin-right: 8px;"></i>
                 Monitoraggio Live
             </h3>
-            <div class="monitor-controls">
-                <button class="monitor-btn" id="startMonitor">
-                    <i data-lucide="play" size="14"></i>
-                    Avvia Monitoraggio
-                </button>
-                <button class="monitor-btn stop-btn" id="stopMonitor" style="display: none;">
-                    <i data-lucide="stop" size="14"></i>
-                    Ferma Monitoraggio
-                </button>
-                <div id="monitorStatus" style="margin-left: 15px; color: rgba(255,255,255,0.8);"></div>
-            </div>
+            <button class="monitor-btn" id="startMonitor">
+                <i data-lucide="play" size="16"></i>
+                Avvia Monitoraggio
+            </button>
+            <button class="monitor-btn stop-btn" id="stopMonitor" style="display: none;">
+                <i data-lucide="stop" size="16"></i>
+                Ferma Monitoraggio
+            </button>
+            <div id="monitorStatus" style="margin-top: 15px; color: rgba(255,255,255,0.8);"></div>
         </div>
     </div>
 
     <script>
         // Configurazione
         const NETLIFY_FUNCTION_URL = '/.netlify/functions/flight-search';
-        const OPENSKY_FUNCTION_URL = '/.netlify/functions/opensky-search';
         
-        let currentFlight = null;
-        let map = null;
-        let planeMarker = null;
-        let flightPath = null;
         let monitoringInterval = null;
-        let pathCoordinates = [];
+        let currentFlight = null;
 
         // Crea stelle animate
         function createStars() {
             const starsContainer = document.getElementById('stars');
-            for (let i = 0; i < 80; i++) {
+            for (let i = 0; i < 100; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
                 star.style.left = Math.random() * 100 + '%';
@@ -563,238 +468,7 @@
             }
         }
 
-        // Inizializza mappa
-        function initMap() {
-            if (map) {
-                map.remove();
-            }
-            
-            map = L.map('map', {
-                zoomControl: true,
-                scrollWheelZoom: true,
-                doubleClickZoom: true,
-                touchZoom: true
-            }).setView([45.0, 10.0], 4);
-
-            // Tile layer con OpenStreetMap
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors',
-                maxZoom: 18
-            }).addTo(map);
-        }
-
-        // Crea icona aereo personalizzata
-        function createPlaneIcon(heading = 0) {
-            return L.divIcon({
-                html: `<div style="transform: rotate(${heading}deg); font-size: 24px; color: #e74c3c;">✈️</div>`,
-                className: 'plane-marker',
-                iconSize: [30, 30],
-                iconAnchor: [15, 15]
-            });
-        }
-
-        // Crea marker aeroporto
-        function createAirportMarker() {
-            return L.divIcon({
-                html: '<div class="airport-marker"></div>',
-                className: 'airport-marker-container',
-                iconSize: [12, 12],
-                iconAnchor: [6, 6]
-            });
-        }
-
-        // Database coordinate aeroporti (esteso)
-        const airportCoords = {
-            // Europa
-            'LHR': [51.4700, -0.4543],   // London Heathrow
-            'CDG': [49.0097, 2.5479],    // Paris Charles de Gaulle
-            'FRA': [50.0375, 8.5622],    // Frankfurt
-            'AMS': [52.3105, 4.7683],    // Amsterdam Schiphol
-            'FCO': [41.8003, 12.2389],   // Roma Fiumicino
-            'MXP': [45.6306, 8.7231],    // Milano Malpensa
-            'BCN': [41.2974, 2.0833],    // Barcelona
-            'MAD': [40.4839, -3.5680],   // Madrid
-            'BER': [52.3667, 13.5033],   // Berlin
-            'MUC': [48.3538, 11.7861],   // Munich
-            'ZUR': [47.4647, 8.5492],    // Zurich
-            'VIE': [48.1103, 16.5697],   // Vienna
-            
-            // Nord America  
-            'JFK': [40.6413, -73.7781],  // New York JFK
-            'LAX': [33.9428, -118.4081], // Los Angeles
-            'ORD': [41.9742, -87.9073],  // Chicago O'Hare
-            'DFW': [32.8998, -97.0403],  // Dallas Fort Worth
-            'ATL': [33.6407, -84.4277],  // Atlanta
-            'LAS': [36.0840, -115.1537], // Las Vegas
-            'MIA': [25.7959, -80.2870],  // Miami
-            'SFO': [37.6213, -122.3790], // San Francisco
-            'SEA': [47.4502, -122.3088], // Seattle
-            'YYZ': [43.6777, -79.6248],  // Toronto
-            
-            // Asia
-            'NRT': [35.7720, 140.3929],  // Tokyo Narita
-            'HND': [35.5494, 139.7798],  // Tokyo Haneda
-            'ICN': [37.4602, 126.4407],  // Seoul Incheon
-            'PVG': [31.1443, 121.8083],  // Shanghai Pudong
-            'PEK': [40.0799, 116.6031],  // Beijing Capital
-            'SIN': [1.3644, 103.9915],   // Singapore
-            'HKG': [22.3080, 113.9185],  // Hong Kong
-            'BKK': [13.6900, 100.7501],  // Bangkok
-            'DXB': [25.2532, 55.3657],   // Dubai
-            'DOH': [25.2731, 51.6078],   // Doha
-            
-            // Altri importanti
-            'SYD': [-33.9399, 151.1753], // Sydney
-            'MEL': [-37.6690, 144.8410], // Melbourne
-            'JNB': [-26.1367, 28.2411],  // Johannesburg
-            'CAI': [30.1127, 31.4000],   // Cairo
-            'IST': [41.2619, 28.7278],   // Istanbul
-            'MOW': [55.9726, 37.4146],   // Moscow
-        };
-
-        // Aggiorna mappa con dati volo
-        function updateMap(flight, liveData = null) {
-            if (!map) initMap();
-
-            // Rimuovi marker precedenti
-            if (planeMarker) map.removeLayer(planeMarker);
-            if (flightPath) map.removeLayer(flightPath);
-
-            const departureCode = flight.departure?.iata;
-            const arrivalCode = flight.arrival?.iata;
-            
-            let departureCoords = airportCoords[departureCode];
-            let arrivalCoords = airportCoords[arrivalCode];
-
-            // Fallback a coordinate approssimate se non trovate
-            if (!departureCoords) {
-                console.log(`Coordinate non trovate per aeroporto: ${departureCode}`);
-                departureCoords = [40.0, 0.0]; // Coordinate di default
-            }
-            
-            if (!arrivalCoords) {
-                console.log(`Coordinate non trovate per aeroporto: ${arrivalCode}`);
-                arrivalCoords = [50.0, 10.0]; // Coordinate di default
-            }
-
-            // Marker aeroporti
-            if (departureCode && departureCoords) {
-                L.marker(departureCoords, { icon: createAirportMarker() })
-                    .addTo(map)
-                    .bindPopup(`<b>${departureCode}</b><br>${flight.departure?.airport || 'Aeroporto di partenza'}`);
-            }
-
-            if (arrivalCode && arrivalCoords) {
-                L.marker(arrivalCoords, { icon: createAirportMarker() })
-                    .addTo(map)
-                    .bindPopup(`<b>${arrivalCode}</b><br>${flight.arrival?.airport || 'Aeroporto di arrivo'}`);
-            }
-
-            // Posizione aereo
-            let planeCoords = departureCoords;
-            let heading = 90;
-
-            if (liveData && liveData.latitude && liveData.longitude) {
-                planeCoords = [liveData.latitude, liveData.longitude];
-                heading = liveData.heading || calculateHeading(departureCoords, arrivalCoords);
-            } else if (flight.live && flight.live.latitude && flight.live.longitude) {
-                planeCoords = [flight.live.latitude, flight.live.longitude];
-                heading = flight.live.heading || calculateHeading(departureCoords, arrivalCoords);
-            }
-
-            // Marker aereo
-            planeMarker = L.marker(planeCoords, { 
-                icon: createPlaneIcon(heading),
-                zIndexOffset: 1000
-            }).addTo(map);
-
-            const flightCode = flight.flight?.iata || 'N/A';
-            const altitude = (liveData?.altitude || flight.live?.altitude || 0) + 'm';
-            const speed = (liveData?.speed_horizontal || flight.live?.speed_horizontal || 0) + ' km/h';
-
-            planeMarker.bindPopup(`
-                <div style="text-align: center;">
-                    <b>${flightCode}</b><br>
-                    <small>Altitudine: ${altitude}</small><br>
-                    <small>Velocità: ${speed}</small>
-                </div>
-            `);
-
-            // Path di volo (linea tratteggiata)
-            if (departureCoords && arrivalCoords) {
-                const pathPoints = [departureCoords, planeCoords, arrivalCoords];
-                flightPath = L.polyline(pathPoints, {
-                    color: '#3498db',
-                    weight: 3,
-                    opacity: 0.7,
-                    dashArray: '10, 10'
-                }).addTo(map);
-            }
-
-            // Zoom sulla vista ottimale
-            const bounds = L.latLngBounds([departureCoords, arrivalCoords, planeCoords]);
-            map.fitBounds(bounds, { padding: [20, 20] });
-
-            console.log('Mappa aggiornata:', {
-                departure: departureCode,
-                arrival: arrivalCode,
-                planePosition: planeCoords,
-                hasLiveData: !!liveData
-            });
-        }
-
-        // Calcola heading tra due punti
-        function calculateHeading(from, to) {
-            if (!from || !to) return 90;
-            
-            const dLon = (to[1] - from[1]) * Math.PI / 180;
-            const lat1 = from[0] * Math.PI / 180;
-            const lat2 = to[0] * Math.PI / 180;
-            
-            const y = Math.sin(dLon) * Math.cos(lat2);
-            const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
-            
-            let heading = Math.atan2(y, x) * 180 / Math.PI;
-            return (heading + 360) % 360;
-        }
-
-        // Ottieni dati live da OpenSky tramite Netlify Function
-        async function getLiveFlightData(icao24) {
-            try {
-                const url = `${OPENSKY_FUNCTION_URL}?icao24=${icao24}`;
-                console.log('Chiamando OpenSky Function:', url);
-                
-                const response = await fetch(url);
-                const result = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error(result.error || `HTTP Error: ${response.status}`);
-                }
-                
-                if (result.success && result.data) {
-                    const state = result.data;
-                    console.log('Dati OpenSky ricevuti:', state);
-                    
-                    return {
-                        icao24: state.icao24,
-                        callsign: state.callsign,
-                        longitude: state.longitude,
-                        latitude: state.latitude,
-                        altitude: state.baro_altitude,
-                        speed_horizontal: state.velocity ? Math.round(state.velocity * 3.6) : null, // m/s to km/h
-                        heading: state.true_track
-                    };
-                }
-                
-                console.log('Nessun dato live trovato per:', icao24);
-                return null;
-            } catch (error) {
-                console.error('Errore OpenSky Function:', error);
-                return null;
-            }
-        }
-
-        // Funzione principale per ottenere volo
+        // Funzione per ottenere informazioni volo
         async function getFlightByIATA(flightIATA) {
             try {
                 const url = `${NETLIFY_FUNCTION_URL}?flight_iata=${encodeURIComponent(flightIATA)}`;
@@ -843,7 +517,7 @@
             return statusMap[status] || 'status-scheduled';
         }
 
-        // Traduci status
+        // Traduci status in italiano
         function translateStatus(status) {
             const translations = {
                 'active': 'In Volo',
@@ -855,99 +529,98 @@
             return translations[status] || status;
         }
 
-        // Renderizza info volo
-        function renderFlightInfo(flight, liveData = null) {
-            const displayData = liveData || flight.live || {};
-            const hasLiveData = displayData && (displayData.latitude || displayData.longitude);
+        // Renderizza risultato volo
+        function renderFlightResult(flight) {
+            const hasLiveData = flight.live && (flight.live.latitude || flight.live.longitude);
             
             return `
-                <div class="flight-header">
-                    <div class="flight-number">
-                        ${flight.flight?.iata || 'N/A'}
-                        ${flight.airline?.name ? `<div style="font-size: 0.6em; color: #7f8c8d; font-weight: 400;">${flight.airline.name}</div>` : ''}
+                <div class="flight-card">
+                    <div class="flight-header">
+                        <div class="flight-number">
+                            ${flight.flight?.iata || 'N/A'}
+                            ${flight.airline?.name ? `<div style="font-size: 0.6em; color: #7f8c8d; font-weight: 400;">${flight.airline.name}</div>` : ''}
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <span class="status-badge ${getStatusClass(flight.flight_status)}">
+                                ${translateStatus(flight.flight_status)}
+                            </span>
+                            ${hasLiveData ? '<div class="live-indicator"><div class="pulse"></div>Live</div>' : ''}
+                        </div>
                     </div>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <span class="status-badge ${getStatusClass(flight.flight_status)}">
-                            ${translateStatus(flight.flight_status)}
-                        </span>
-                        ${hasLiveData ? '<div class="live-indicator"><div class="pulse"></div>Live</div>' : ''}
-                    </div>
-                </div>
 
-                <div class="flight-route">
-                    <div class="airport">
-                        <div class="airport-code">${flight.departure?.iata || 'N/A'}</div>
-                        <div class="airport-name">${flight.departure?.airport || 'Aeroporto di partenza'}</div>
-                        <div class="time">
-                            <strong>Partenza:</strong><br>
-                            ${formatDateTime(flight.departure?.scheduled)}
-                            ${flight.departure?.delay ? `<div style="color: #e74c3c; font-size: 0.9em;">Ritardo: ${flight.departure.delay}min</div>` : ''}
-                        </div>
-                    </div>
-                    
-                    <div class="plane-icon">
-                        <i data-lucide="plane" size="28"></i>
-                    </div>
-                    
-                    <div class="airport">
-                        <div class="airport-code">${flight.arrival?.iata || 'N/A'}</div>
-                        <div class="airport-name">${flight.arrival?.airport || 'Aeroporto di arrivo'}</div>
-                        <div class="time">
-                            <strong>Arrivo:</strong><br>
-                            ${formatDateTime(flight.arrival?.scheduled)}
-                            ${flight.arrival?.delay ? `<div style="color: #e74c3c; font-size: 0.9em;">Ritardo: ${flight.arrival.delay}min</div>` : ''}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flight-details">
-                    ${flight.departure?.gate ? `
-                        <div class="detail-item">
-                            <div class="detail-label">Gate</div>
-                            <div class="detail-value">${flight.departure.gate}</div>
-                        </div>
-                    ` : ''}
-                    
-                    ${flight.departure?.terminal ? `
-                        <div class="detail-item">
-                            <div class="detail-label">Terminal</div>
-                            <div class="detail-value">${flight.departure.terminal}</div>
-                        </div>
-                    ` : ''}
-                    
-                    ${flight.aircraft?.registration ? `
-                        <div class="detail-item">
-                            <div class="detail-label">Aeromobile</div>
-                            <div class="detail-value">${flight.aircraft.registration}</div>
-                        </div>
-                    ` : ''}
-                    
-                    ${hasLiveData ? `
-                        <div class="detail-item">
-                            <div class="detail-label">Altitudine</div>
-                            <div class="detail-value">${displayData.altitude || 'N/A'} m</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Velocità</div>
-                            <div class="detail-value">${displayData.speed_horizontal || 'N/A'} km/h</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Posizione</div>
-                            <div class="detail-value">
-                                ${displayData.latitude ? displayData.latitude.toFixed(2) : 'N/A'}, 
-                                ${displayData.longitude ? displayData.longitude.toFixed(2) : 'N/A'}
+                    <div class="flight-route">
+                        <div class="airport">
+                            <div class="airport-code">${flight.departure?.iata || 'N/A'}</div>
+                            <div class="airport-name">${flight.departure?.airport || 'Aeroporto di partenza'}</div>
+                            <div class="time">
+                                <strong>Partenza:</strong><br>
+                                ${formatDateTime(flight.departure?.scheduled)}
+                                ${flight.departure?.delay ? `<div style="color: #e74c3c; font-size: 0.9em;">Ritardo: ${flight.departure.delay}min</div>` : ''}
                             </div>
                         </div>
-                    ` : ''}
+                        
+                        <div class="plane-icon">
+                            <i data-lucide="plane" size="32"></i>
+                        </div>
+                        
+                        <div class="airport">
+                            <div class="airport-code">${flight.arrival?.iata || 'N/A'}</div>
+                            <div class="airport-name">${flight.arrival?.airport || 'Aeroporto di arrivo'}</div>
+                            <div class="time">
+                                <strong>Arrivo:</strong><br>
+                                ${formatDateTime(flight.arrival?.scheduled)}
+                                ${flight.arrival?.delay ? `<div style="color: #e74c3c; font-size: 0.9em;">Ritardo: ${flight.arrival.delay}min</div>` : ''}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flight-details">
+                        ${flight.departure?.gate ? `
+                            <div class="detail-item">
+                                <div class="detail-label">Gate Partenza</div>
+                                <div class="detail-value">${flight.departure.gate}</div>
+                            </div>
+                        ` : ''}
+                        
+                        ${flight.departure?.terminal ? `
+                            <div class="detail-item">
+                                <div class="detail-label">Terminal</div>
+                                <div class="detail-value">${flight.departure.terminal}</div>
+                            </div>
+                        ` : ''}
+                        
+                        ${flight.aircraft?.registration ? `
+                            <div class="detail-item">
+                                <div class="detail-label">Aeromobile</div>
+                                <div class="detail-value">${flight.aircraft.registration}</div>
+                            </div>
+                        ` : ''}
+                        
+                        ${hasLiveData ? `
+                            <div class="detail-item">
+                                <div class="detail-label">Altitudine</div>
+                                <div class="detail-value">${flight.live.altitude || 'N/A'} m</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Velocità</div>
+                                <div class="detail-value">${flight.live.speed_horizontal || 'N/A'} km/h</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Posizione</div>
+                                <div class="detail-value">
+                                    ${flight.live.latitude ? flight.live.latitude.toFixed(2) : 'N/A'}, 
+                                    ${flight.live.longitude ? flight.live.longitude.toFixed(2) : 'N/A'}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
                 </div>
             `;
         }
 
         // Mostra errore
         function showError(message) {
-            const mainContent = document.getElementById('mainContent');
-            mainContent.style.display = 'block';
-            mainContent.innerHTML = `
+            document.getElementById('results').innerHTML = `
                 <div class="error-message">
                     <i data-lucide="alert-circle" size="24" style="vertical-align: middle; margin-right: 10px;"></i>
                     ${message}
@@ -956,60 +629,28 @@
             initLucide();
         }
 
-        // Ricerca volo principale
+        // Ricerca volo
         async function searchFlight(flightCode) {
             const loading = document.getElementById('loading');
-            const mainContent = document.getElementById('mainContent');
+            const results = document.getElementById('results');
             const monitorSection = document.getElementById('monitorSection');
             
             loading.style.display = 'block';
-            mainContent.style.display = 'none';
+            results.innerHTML = '';
             monitorSection.style.display = 'none';
             
             try {
-                console.log('Cercando volo:', flightCode);
-                
-                // Ottieni dati da AviationStack
                 const flight = await getFlightByIATA(flightCode.toUpperCase());
                 
                 if (flight) {
                     currentFlight = flight;
-                    console.log('Volo trovato:', flight);
-                    
-                    // Prova a ottenere dati live da OpenSky se disponibile ICAO24
-                    let liveData = null;
-                    if (flight.aircraft?.icao24) {
-                        console.log('Tentativo recupero dati live per:', flight.aircraft.icao24);
-                        liveData = await getLiveFlightData(flight.aircraft.icao24);
-                    }
-                    
-                    // Mostra info volo
-                    document.getElementById('flightInfo').innerHTML = renderFlightInfo(flight, liveData);
-                    
-                    // Aggiorna mappa
-                    updateMap(flight, liveData);
-                    
-                    // Mostra contenuto
-                    mainContent.style.display = 'grid';
+                    results.innerHTML = renderFlightResult(flight);
                     monitorSection.style.display = 'block';
-                    
                     initLucide();
-                    
-                    // Auto-scroll alla mappa su mobile
-                    if (window.innerWidth <= 768) {
-                        setTimeout(() => {
-                            document.getElementById('map').scrollIntoView({ 
-                                behavior: 'smooth', 
-                                block: 'center' 
-                            });
-                        }, 1000);
-                    }
-                    
                 } else {
                     showError(`Volo "${flightCode}" non trovato. Verifica il codice e riprova.`);
                 }
             } catch (error) {
-                console.error('Errore nella ricerca:', error);
                 showError(error.message || 'Errore durante la ricerca del volo');
             } finally {
                 loading.style.display = 'none';
@@ -1029,13 +670,12 @@
             
             const flightCode = currentFlight.flight?.iata;
             
-            const updateStatus = (lastUpdate = null) => {
+            const updateStatus = () => {
                 const now = new Date().toLocaleTimeString('it-IT');
                 status.innerHTML = `
                     <div class="live-indicator">
                         <div class="pulse"></div>
-                        Monitoraggio attivo - ${now}
-                        ${lastUpdate ? `<br><small>Dati aggiornati: ${lastUpdate}</small>` : ''}
+                        Monitoraggio attivo per ${flightCode} - Ultimo aggiornamento: ${now}
                     </div>
                 `;
             };
@@ -1044,39 +684,17 @@
             
             monitoringInterval = setInterval(async () => {
                 try {
-                    console.log('Aggiornamento monitoraggio...');
-                    
-                    // Prova prima OpenSky per dati live (gratuito)
-                    let liveData = null;
-                    if (currentFlight.aircraft?.icao24) {
-                        liveData = await getLiveFlightData(currentFlight.aircraft.icao24);
-                    }
-                    
-                    // Se non ci sono dati live, aggiorna da AviationStack
-                    if (!liveData) {
-                        const updatedFlight = await getFlightByIATA(flightCode);
-                        if (updatedFlight) {
-                            currentFlight = updatedFlight;
-                            liveData = updatedFlight.live;
-                        }
-                    }
-                    
-                    // Aggiorna interfaccia
-                    if (liveData || currentFlight) {
-                        document.getElementById('flightInfo').innerHTML = 
-                            renderFlightInfo(currentFlight, liveData);
-                        updateMap(currentFlight, liveData);
+                    const updatedFlight = await getFlightByIATA(flightCode);
+                    if (updatedFlight) {
+                        currentFlight = updatedFlight;
+                        document.getElementById('results').innerHTML = renderFlightResult(updatedFlight);
                         initLucide();
-                        
-                        const updateTime = new Date().toLocaleTimeString('it-IT');
-                        updateStatus(updateTime);
+                        updateStatus();
                     }
-                    
                 } catch (error) {
                     console.error('Errore nel monitoraggio:', error);
-                    updateStatus('Errore aggiornamento');
                 }
-            }, 30000); // Aggiorna ogni 30 secondi
+            }, 60000); // Aggiorna ogni minuto
         }
 
         function stopMonitoring() {
@@ -1122,15 +740,6 @@
         window.addEventListener('beforeunload', () => {
             if (monitoringInterval) {
                 clearInterval(monitoringInterval);
-            }
-        });
-
-        // Ridimensiona mappa quando cambia dimensione finestra
-        window.addEventListener('resize', () => {
-            if (map) {
-                setTimeout(() => {
-                    map.invalidateSize();
-                }, 100);
             }
         });
     </script>
