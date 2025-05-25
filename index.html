@@ -164,10 +164,6 @@
             box-shadow: 0 15px 40px rgba(238, 90, 111, 0.6);
         }
 
-        .search-btn:active {
-            transform: translateY(-1px);
-        }
-
         .loading {
             display: none;
             text-align: center;
@@ -189,17 +185,35 @@
             100% { transform: rotate(360deg); }
         }
 
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
         .flight-card {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 25px;
             padding: 30px;
-            margin-bottom: 20px;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             transform: translateY(20px);
             opacity: 0;
             animation: slideUp 0.6s ease forwards;
+        }
+
+        .weather-travel-info {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 25px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideUp 0.6s ease forwards 0.2s;
         }
 
         @keyframes slideUp {
@@ -280,8 +294,8 @@
 
         .flight-details {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
             background: rgba(52, 152, 219, 0.1);
             padding: 20px;
             border-radius: 15px;
@@ -305,6 +319,104 @@
             font-weight: 600;
         }
 
+        .info-section {
+            margin-bottom: 20px;
+        }
+
+        .info-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .weather-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(52, 152, 219, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .weather-icon {
+            font-size: 24px;
+        }
+
+        .weather-info {
+            flex: 1;
+        }
+
+        .weather-location {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .weather-temp {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #3498db;
+            margin-bottom: 2px;
+        }
+
+        .weather-desc {
+            font-size: 13px;
+            color: #7f8c8d;
+        }
+
+        .travel-info {
+            background: rgba(46, 204, 113, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+
+        .travel-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .travel-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .travel-label {
+            font-size: 13px;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+        .travel-value {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .timezone-info {
+            background: rgba(155, 89, 182, 0.1);
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .timezone-label {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-bottom: 4px;
+        }
+
+        .timezone-time {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #8e44ad;
+        }
+
         .error-message {
             background: rgba(231, 76, 60, 0.1);
             border: 1px solid rgba(231, 76, 60, 0.3);
@@ -313,6 +425,7 @@
             border-radius: 15px;
             text-align: center;
             margin-bottom: 20px;
+            grid-column: 1 / -1;
         }
 
         .monitor-section {
@@ -320,7 +433,6 @@
             backdrop-filter: blur(20px);
             border-radius: 25px;
             padding: 25px;
-            margin-top: 20px;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
@@ -375,13 +487,21 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
         @media (max-width: 768px) {
             .title { font-size: 2.5em; }
             .search-form { flex-direction: column; }
             .search-btn { width: 100%; justify-content: center; }
             .flight-route { grid-template-columns: 1fr; gap: 15px; }
             .plane-icon { transform: rotate(90deg); }
-            .flight-details { grid-template-columns: 1fr; }
+            .flight-details { grid-template-columns: 1fr 1fr; }
+            .weather-card { flex-direction: column; text-align: center; }
         }
     </style>
 </head>
@@ -396,7 +516,7 @@
                 </div>
             </div>
             <h1 class="title">SkyTracker</h1>
-            <p class="subtitle">Traccia i tuoi voli in tempo reale con stile</p>
+            <p class="subtitle">Traccia i tuoi voli con info meteo e viaggio</p>
         </header>
 
         <div class="search-container">
@@ -419,15 +539,15 @@
 
         <div class="loading" id="loading">
             <div class="spinner"></div>
-            <p style="color: white; font-size: 1.1em;">Cercando il tuo volo...</p>
+            <p style="color: white; font-size: 1.1em;">Cercando volo e dati meteo...</p>
         </div>
 
         <div id="results"></div>
 
         <div class="monitor-section" id="monitorSection" style="display: none;">
             <h3 style="color: white; margin-bottom: 15px;">
-                <i data-lucide="radio" size="20" style="vertical-align: middle; margin-right: 8px;"></i>
-                Monitoraggio Live
+                <i data-lucide="refresh-cw" size="20" style="vertical-align: middle; margin-right: 8px;"></i>
+                Monitoraggio Smart
             </h3>
             <button class="monitor-btn" id="startMonitor">
                 <i data-lucide="play" size="16"></i>
@@ -444,9 +564,46 @@
     <script>
         // Configurazione
         const NETLIFY_FUNCTION_URL = '/.netlify/functions/flight-search';
+        const WEATHER_API_KEY = 'your_weather_api_key'; // Sostituisci con chiave OpenWeatherMap
         
         let monitoringInterval = null;
         let currentFlight = null;
+
+        // Database coordinate aeroporti principali
+        const airportCoords = {
+            // Nord America
+            'JFK': { lat: 40.6413, lon: -73.7781, city: 'New York', tz: 'America/New_York' },
+            'LAX': { lat: 33.9428, lon: -118.4081, city: 'Los Angeles', tz: 'America/Los_Angeles' },
+            'ORD': { lat: 41.9742, lon: -87.9073, city: 'Chicago', tz: 'America/Chicago' },
+            'DFW': { lat: 32.8998, lon: -97.0403, city: 'Dallas', tz: 'America/Chicago' },
+            'ATL': { lat: 33.6407, lon: -84.4277, city: 'Atlanta', tz: 'America/New_York' },
+            'IAH': { lat: 29.9902, lon: -95.3368, city: 'Houston', tz: 'America/Chicago' },
+            'MIA': { lat: 25.7959, lon: -80.2870, city: 'Miami', tz: 'America/New_York' },
+            
+            // Europa
+            'LHR': { lat: 51.4700, lon: -0.4543, city: 'London', tz: 'Europe/London' },
+            'CDG': { lat: 49.0097, lon: 2.5479, city: 'Paris', tz: 'Europe/Paris' },
+            'FRA': { lat: 50.0375, lon: 8.5622, city: 'Frankfurt', tz: 'Europe/Berlin' },
+            'AMS': { lat: 52.3105, lon: 4.7683, city: 'Amsterdam', tz: 'Europe/Amsterdam' },
+            'FCO': { lat: 41.8003, lon: 12.2389, city: 'Rome', tz: 'Europe/Rome' },
+            'MXP': { lat: 45.6306, lon: 8.7231, city: 'Milan', tz: 'Europe/Rome' },
+            'BCN': { lat: 41.2974, lon: 2.0833, city: 'Barcelona', tz: 'Europe/Madrid' },
+            'MAD': { lat: 40.4839, lon: -3.5680, city: 'Madrid', tz: 'Europe/Madrid' },
+            'BER': { lat: 52.3667, lon: 13.5033, city: 'Berlin', tz: 'Europe/Berlin' },
+            'MUC': { lat: 48.3538, lon: 11.7861, city: 'Munich', tz: 'Europe/Berlin' },
+            
+            // Asia Pacifico
+            'NRT': { lat: 35.7720, lon: 140.3929, city: 'Tokyo', tz: 'Asia/Tokyo' },
+            'ICN': { lat: 37.4602, lon: 126.4407, city: 'Seoul', tz: 'Asia/Seoul' },
+            'SIN': { lat: 1.3644, lon: 103.9915, city: 'Singapore', tz: 'Asia/Singapore' },
+            'HKG': { lat: 22.3080, lon: 113.9185, city: 'Hong Kong', tz: 'Asia/Hong_Kong' },
+            'SYD': { lat: -33.9399, lon: 151.1753, city: 'Sydney', tz: 'Australia/Sydney' },
+            
+            // Altri
+            'DXB': { lat: 25.2532, lon: 55.3657, city: 'Dubai', tz: 'Asia/Dubai' },
+            'DOH': { lat: 25.2731, lon: 51.6078, city: 'Doha', tz: 'Asia/Qatar' },
+            'OGG': { lat: 20.8987, lon: -156.4308, city: 'Kahului', tz: 'Pacific/Honolulu' }
+        };
 
         // Crea stelle animate
         function createStars() {
@@ -465,6 +622,61 @@
         function initLucide() {
             if (typeof lucide !== 'undefined') {
                 lucide.createIcons();
+            }
+        }
+
+        // Ottieni meteo per coordinate
+        async function getWeatherData(lat, lon, cityName) {
+            try {
+                // API OpenWeatherMap gratuita (richiede registrazione)
+                const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}&units=metric&lang=it`;
+                
+                // Per demo, simuliamo dati meteo
+                return {
+                    city: cityName,
+                    temp: Math.round(15 + Math.random() * 20),
+                    description: ['Sereno', 'Nuvoloso', 'Parzialmente nuvoloso', 'Pioggia leggera'][Math.floor(Math.random() * 4)],
+                    icon: ['☀️', '☁️', '⛅', '🌧️'][Math.floor(Math.random() * 4)],
+                    humidity: Math.round(40 + Math.random() * 40),
+                    wind: Math.round(5 + Math.random() * 15)
+                };
+            } catch (error) {
+                console.error('Errore meteo:', error);
+                return null;
+            }
+        }
+
+        // Calcola distanza tra due punti
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radio della Terra in km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return Math.round(R * c);
+        }
+
+        // Calcola durata volo stimata
+        function calculateFlightDuration(distance) {
+            const avgSpeed = 850; // km/h velocità media commerciale
+            const hours = distance / avgSpeed;
+            const h = Math.floor(hours);
+            const m = Math.round((hours - h) * 60);
+            return `${h}h ${m}m`;
+        }
+
+        // Ottieni orario locale
+        function getLocalTime(timezone) {
+            try {
+                return new Date().toLocaleTimeString('it-IT', {
+                    timeZone: timezone,
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            } catch {
+                return 'N/A';
             }
         }
 
@@ -517,7 +729,7 @@
             return statusMap[status] || 'status-scheduled';
         }
 
-        // Traduci status in italiano
+        // Traduci status
         function translateStatus(status) {
             const translations = {
                 'active': 'In Volo',
@@ -529,11 +741,118 @@
             return translations[status] || status;
         }
 
-        // Renderizza risultato volo
-        function renderFlightResult(flight) {
-            const hasLiveData = flight.live && (flight.live.latitude || flight.live.longitude);
+        // Renderizza meteo
+        function renderWeather(departureWeather, arrivalWeather, depCode, arrCode) {
+            if (!departureWeather && !arrivalWeather) return '';
             
             return `
+                <div class="info-section">
+                    <div class="info-title">
+                        <i data-lucide="cloud" size="18"></i>
+                        Condizioni Meteo
+                    </div>
+                    ${departureWeather ? `
+                        <div class="weather-card">
+                            <div class="weather-icon">${departureWeather.icon}</div>
+                            <div class="weather-info">
+                                <div class="weather-location">${depCode} - ${departureWeather.city}</div>
+                                <div class="weather-temp">${departureWeather.temp}°C</div>
+                                <div class="weather-desc">${departureWeather.description} • Vento ${departureWeather.wind} km/h</div>
+                            </div>
+                        </div>
+                    ` : ''}
+                    ${arrivalWeather ? `
+                        <div class="weather-card">
+                            <div class="weather-icon">${arrivalWeather.icon}</div>
+                            <div class="weather-info">
+                                <div class="weather-location">${arrCode} - ${arrivalWeather.city}</div>
+                                <div class="weather-temp">${arrivalWeather.temp}°C</div>
+                                <div class="weather-desc">${arrivalWeather.description} • Vento ${arrivalWeather.wind} km/h</div>
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        // Renderizza info viaggio
+        function renderTravelInfo(flight, distance, duration, depInfo, arrInfo) {
+            return `
+                <div class="info-section">
+                    <div class="info-title">
+                        <i data-lucide="info" size="18"></i>
+                        Info Viaggio
+                    </div>
+                    <div class="travel-info">
+                        <div class="travel-item">
+                            <span class="travel-label">Distanza</span>
+                            <span class="travel-value">${distance} km</span>
+                        </div>
+                        <div class="travel-item">
+                            <span class="travel-label">Durata stimata</span>
+                            <span class="travel-value">${duration}</span>
+                        </div>
+                        <div class="travel-item">
+                            <span class="travel-label">Aeromobile</span>
+                            <span class="travel-value">${flight.aircraft?.registration || 'N/A'}</span>
+                        </div>
+                        <div class="travel-item">
+                            <span class="travel-label">Compagnia</span>
+                            <span class="travel-value">${flight.airline?.name || 'N/A'}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                ${depInfo && arrInfo ? `
+                    <div class="info-section">
+                        <div class="info-title">
+                            <i data-lucide="clock" size="18"></i>
+                            Fusi Orari
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div class="timezone-info">
+                                <div class="timezone-label">Partenza (${flight.departure?.iata})</div>
+                                <div class="timezone-time">${getLocalTime(depInfo.tz)}</div>
+                            </div>
+                            <div class="timezone-info">
+                                <div class="timezone-label">Arrivo (${flight.arrival?.iata})</div>
+                                <div class="timezone-time">${getLocalTime(arrInfo.tz)}</div>
+                            </div>
+                        </div>
+                    </div>
+                ` : ''}
+            `;
+        }
+
+        // Renderizza risultato volo completo
+        async function renderFlightResult(flight) {
+            const hasLiveData = flight.live && (flight.live.latitude || flight.live.longitude);
+            
+            const depCode = flight.departure?.iata;
+            const arrCode = flight.arrival?.iata;
+            const depInfo = airportCoords[depCode];
+            const arrInfo = airportCoords[arrCode];
+
+            // Calcola info viaggio
+            let distance = 0;
+            let duration = 'N/A';
+            if (depInfo && arrInfo) {
+                distance = calculateDistance(depInfo.lat, depInfo.lon, arrInfo.lat, arrInfo.lon);
+                duration = calculateFlightDuration(distance);
+            }
+
+            // Ottieni dati meteo (simulati per demo)
+            let departureWeather = null;
+            let arrivalWeather = null;
+            
+            if (depInfo) {
+                departureWeather = await getWeatherData(depInfo.lat, depInfo.lon, depInfo.city);
+            }
+            if (arrInfo) {
+                arrivalWeather = await getWeatherData(arrInfo.lat, arrInfo.lon, arrInfo.city);
+            }
+
+            const flightCard = `
                 <div class="flight-card">
                     <div class="flight-header">
                         <div class="flight-number">
@@ -550,7 +869,7 @@
 
                     <div class="flight-route">
                         <div class="airport">
-                            <div class="airport-code">${flight.departure?.iata || 'N/A'}</div>
+                            <div class="airport-code">${depCode || 'N/A'}</div>
                             <div class="airport-name">${flight.departure?.airport || 'Aeroporto di partenza'}</div>
                             <div class="time">
                                 <strong>Partenza:</strong><br>
@@ -564,7 +883,7 @@
                         </div>
                         
                         <div class="airport">
-                            <div class="airport-code">${flight.arrival?.iata || 'N/A'}</div>
+                            <div class="airport-code">${arrCode || 'N/A'}</div>
                             <div class="airport-name">${flight.arrival?.airport || 'Aeroporto di arrivo'}</div>
                             <div class="time">
                                 <strong>Arrivo:</strong><br>
@@ -577,7 +896,7 @@
                     <div class="flight-details">
                         ${flight.departure?.gate ? `
                             <div class="detail-item">
-                                <div class="detail-label">Gate Partenza</div>
+                                <div class="detail-label">Gate</div>
                                 <div class="detail-value">${flight.departure.gate}</div>
                             </div>
                         ` : ''}
@@ -586,13 +905,6 @@
                             <div class="detail-item">
                                 <div class="detail-label">Terminal</div>
                                 <div class="detail-value">${flight.departure.terminal}</div>
-                            </div>
-                        ` : ''}
-                        
-                        ${flight.aircraft?.registration ? `
-                            <div class="detail-item">
-                                <div class="detail-label">Aeromobile</div>
-                                <div class="detail-value">${flight.aircraft.registration}</div>
                             </div>
                         ` : ''}
                         
@@ -605,15 +917,33 @@
                                 <div class="detail-label">Velocità</div>
                                 <div class="detail-value">${flight.live.speed_horizontal || 'N/A'} km/h</div>
                             </div>
+                        ` : ''}
+                        
+                        ${distance > 0 ? `
                             <div class="detail-item">
-                                <div class="detail-label">Posizione</div>
-                                <div class="detail-value">
-                                    ${flight.live.latitude ? flight.live.latitude.toFixed(2) : 'N/A'}, 
-                                    ${flight.live.longitude ? flight.live.longitude.toFixed(2) : 'N/A'}
-                                </div>
+                                <div class="detail-label">Distanza</div>
+                                <div class="detail-value">${distance} km</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Durata</div>
+                                <div class="detail-value">${duration}</div>
                             </div>
                         ` : ''}
                     </div>
+                </div>
+            `;
+
+            const weatherTravelInfo = `
+                <div class="weather-travel-info">
+                    ${renderWeather(departureWeather, arrivalWeather, depCode, arrCode)}
+                    ${renderTravelInfo(flight, distance, duration, depInfo, arrInfo)}
+                </div>
+            `;
+
+            return `
+                <div class="content-grid">
+                    ${flightCard}
+                    ${weatherTravelInfo}
                 </div>
             `;
         }
@@ -644,7 +974,7 @@
                 
                 if (flight) {
                     currentFlight = flight;
-                    results.innerHTML = renderFlightResult(flight);
+                    results.innerHTML = await renderFlightResult(flight);
                     monitorSection.style.display = 'block';
                     initLucide();
                 } else {
@@ -657,7 +987,7 @@
             }
         }
 
-        // Monitoraggio continuo
+        // Monitoraggio intelligente
         function startMonitoring() {
             if (!currentFlight) return;
             
@@ -670,12 +1000,19 @@
             
             const flightCode = currentFlight.flight?.iata;
             
-            const updateStatus = () => {
+            const updateStatus = (updateType = 'general') => {
                 const now = new Date().toLocaleTimeString('it-IT');
+                const updateMessages = {
+                    general: 'Aggiornamento dati volo e meteo',
+                    flight: 'Aggiornato status volo',
+                    weather: 'Aggiornate condizioni meteo',
+                    error: 'Errore nell\'aggiornamento'
+                };
+                
                 status.innerHTML = `
                     <div class="live-indicator">
                         <div class="pulse"></div>
-                        Monitoraggio attivo per ${flightCode} - Ultimo aggiornamento: ${now}
+                        Monitoraggio ${flightCode} - ${updateMessages[updateType]} • ${now}
                     </div>
                 `;
             };
@@ -686,15 +1023,28 @@
                 try {
                     const updatedFlight = await getFlightByIATA(flightCode);
                     if (updatedFlight) {
+                        // Controlla se ci sono cambiamenti significativi
+                        const hasChanges = 
+                            currentFlight.flight_status !== updatedFlight.flight_status ||
+                            currentFlight.departure?.gate !== updatedFlight.departure?.gate ||
+                            currentFlight.departure?.delay !== updatedFlight.departure?.delay;
+                        
                         currentFlight = updatedFlight;
-                        document.getElementById('results').innerHTML = renderFlightResult(updatedFlight);
+                        document.getElementById('results').innerHTML = await renderFlightResult(updatedFlight);
                         initLucide();
-                        updateStatus();
+                        
+                        updateStatus(hasChanges ? 'flight' : 'general');
+                        
+                        // Potenziale notifica per cambiamenti importanti
+                        if (hasChanges && 'Notification' in window) {
+                            // Richiedere permesso notifiche (opzionale)
+                        }
                     }
                 } catch (error) {
                     console.error('Errore nel monitoraggio:', error);
+                    updateStatus('error');
                 }
-            }, 60000); // Aggiorna ogni minuto
+            }, 90000); // Aggiorna ogni 90 secondi (più efficiente)
         }
 
         function stopMonitoring() {
@@ -736,7 +1086,7 @@
                 `Inserisci codice volo (es. ${randomExample}, ${examples.filter(e => e !== randomExample).slice(0,2).join(', ')})`;
         });
 
-        // Cleanup al cambio pagina
+        // Cleanup
         window.addEventListener('beforeunload', () => {
             if (monitoringInterval) {
                 clearInterval(monitoringInterval);
