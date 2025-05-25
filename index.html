@@ -4,8 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SkyTracker - Flight Tracking App</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#667eea">
+    <meta name="description" content="Traccia i tuoi voli con info meteo e viaggio in tempo reale">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="SkyTracker">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.js"></script>
     <style>
+        :root {
+            /* Light Theme */
+            --bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-secondary: rgba(255, 255, 255, 0.95);
+            --bg-glass: rgba(255, 255, 255, 0.15);
+            --text-primary: #2c3e50;
+            --text-secondary: #7f8c8d;
+            --text-white: rgba(255, 255, 255, 0.8);
+            --accent-blue: #3498db;
+            --accent-green: #2ecc71;
+            --accent-red: #e74c3c;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --border: rgba(255, 255, 255, 0.2);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme */
+            --bg-primary: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            --bg-secondary: rgba(44, 62, 80, 0.95);
+            --bg-glass: rgba(52, 73, 94, 0.3);
+            --text-primary: #ecf0f1;
+            --text-secondary: #bdc3c7;
+            --text-white: rgba(255, 255, 255, 0.9);
+            --accent-blue: #5dade2;
+            --accent-green: #58d68d;
+            --accent-red: #ec7063;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -14,10 +54,11 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--bg-primary);
             min-height: 100vh;
-            color: #333;
+            color: var(--text-primary);
             overflow-x: hidden;
+            transition: all 0.3s ease;
         }
 
         .stars {
@@ -57,6 +98,34 @@
             text-align: center;
             margin-bottom: 40px;
             padding: 40px 0;
+            position: relative;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 25px;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--shadow);
+        }
+
+        .theme-icon {
+            width: 20px;
+            height: 20px;
+            color: var(--text-white);
         }
 
         .logo {
@@ -68,7 +137,7 @@
         }
 
         .logo-icon {
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--bg-glass);
             padding: 15px;
             border-radius: 20px;
             backdrop-filter: blur(10px);
@@ -92,19 +161,19 @@
         }
 
         .subtitle {
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--text-white);
             font-size: 1.3em;
             font-weight: 300;
         }
 
         .search-container {
-            background: rgba(255, 255, 255, 0.15);
+            background: var(--bg-glass);
             backdrop-filter: blur(20px);
             border-radius: 25px;
             padding: 30px;
             margin-bottom: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 40px var(--shadow);
         }
 
         .search-form {
@@ -123,7 +192,7 @@
         .search-input {
             width: 100%;
             padding: 18px 20px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid var(--border);
             border-radius: 15px;
             background: rgba(255, 255, 255, 0.1);
             color: white;
@@ -193,24 +262,24 @@
         }
 
         .flight-card {
-            background: rgba(255, 255, 255, 0.95);
+            background: var(--bg-secondary);
             border-radius: 25px;
             padding: 30px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 25px 50px var(--shadow);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--border);
             transform: translateY(20px);
             opacity: 0;
             animation: slideUp 0.6s ease forwards;
         }
 
         .weather-travel-info {
-            background: rgba(255, 255, 255, 0.95);
+            background: var(--bg-secondary);
             border-radius: 25px;
             padding: 25px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 25px 50px var(--shadow);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--border);
             transform: translateY(20px);
             opacity: 0;
             animation: slideUp 0.6s ease forwards 0.2s;
@@ -235,7 +304,7 @@
         .flight-number {
             font-size: 1.8em;
             font-weight: 700;
-            color: #2c3e50;
+            color: var(--text-primary);
         }
 
         .status-badge {
@@ -246,10 +315,10 @@
             text-transform: uppercase;
         }
 
-        .status-active { background: #2ecc71; color: white; }
-        .status-scheduled { background: #3498db; color: white; }
-        .status-delayed { background: #e74c3c; color: white; }
-        .status-cancelled { background: #95a5a6; color: white; }
+        .status-active { background: var(--accent-green); color: white; }
+        .status-scheduled { background: var(--accent-blue); color: white; }
+        .status-delayed { background: var(--accent-red); color: white; }
+        .status-cancelled { background: var(--text-secondary); color: white; }
 
         .flight-route {
             display: grid;
@@ -266,12 +335,12 @@
         .airport-code {
             font-size: 2.2em;
             font-weight: 800;
-            color: #2c3e50;
+            color: var(--text-primary);
             margin-bottom: 5px;
         }
 
         .airport-name {
-            color: #7f8c8d;
+            color: var(--text-secondary);
             font-size: 14px;
             margin-bottom: 10px;
         }
@@ -279,11 +348,11 @@
         .time {
             font-size: 1.1em;
             font-weight: 600;
-            color: #34495e;
+            color: var(--text-primary);
         }
 
         .plane-icon {
-            color: #3498db;
+            color: var(--accent-blue);
             animation: fly 2s ease-in-out infinite alternate;
         }
 
@@ -306,7 +375,7 @@
         }
 
         .detail-label {
-            color: #7f8c8d;
+            color: var(--text-secondary);
             font-size: 12px;
             text-transform: uppercase;
             font-weight: 600;
@@ -314,7 +383,7 @@
         }
 
         .detail-value {
-            color: #2c3e50;
+            color: var(--text-primary);
             font-size: 16px;
             font-weight: 600;
         }
@@ -329,7 +398,7 @@
             gap: 8px;
             font-size: 1.1em;
             font-weight: 600;
-            color: #2c3e50;
+            color: var(--text-primary);
             margin-bottom: 15px;
         }
 
@@ -353,20 +422,20 @@
 
         .weather-location {
             font-weight: 600;
-            color: #2c3e50;
+            color: var(--text-primary);
             margin-bottom: 4px;
         }
 
         .weather-temp {
             font-size: 1.2em;
             font-weight: 700;
-            color: #3498db;
+            color: var(--accent-blue);
             margin-bottom: 2px;
         }
 
         .weather-desc {
             font-size: 13px;
-            color: #7f8c8d;
+            color: var(--text-secondary);
         }
 
         .travel-info {
@@ -389,13 +458,13 @@
 
         .travel-label {
             font-size: 13px;
-            color: #7f8c8d;
+            color: var(--text-secondary);
             font-weight: 500;
         }
 
         .travel-value {
             font-weight: 600;
-            color: #2c3e50;
+            color: var(--text-primary);
         }
 
         .timezone-info {
@@ -407,7 +476,7 @@
 
         .timezone-label {
             font-size: 12px;
-            color: #7f8c8d;
+            color: var(--text-secondary);
             margin-bottom: 4px;
         }
 
@@ -420,7 +489,7 @@
         .error-message {
             background: rgba(231, 76, 60, 0.1);
             border: 1px solid rgba(231, 76, 60, 0.3);
-            color: #e74c3c;
+            color: var(--accent-red);
             padding: 20px;
             border-radius: 15px;
             text-align: center;
@@ -429,11 +498,11 @@
         }
 
         .monitor-section {
-            background: rgba(255, 255, 255, 0.15);
+            background: var(--bg-glass);
             backdrop-filter: blur(20px);
             border-radius: 25px;
             padding: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--border);
         }
 
         .monitor-btn {
@@ -468,7 +537,7 @@
             background: rgba(46, 204, 113, 0.2);
             padding: 8px 15px;
             border-radius: 20px;
-            color: #27ae60;
+            color: var(--accent-green);
             font-weight: 600;
             font-size: 14px;
         }
@@ -476,7 +545,7 @@
         .pulse {
             width: 8px;
             height: 8px;
-            background: #27ae60;
+            background: var(--accent-green);
             border-radius: 50%;
             animation: pulse 1.5s ease-in-out infinite;
         }
@@ -487,10 +556,42 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
+        /* PWA Install Button */
+        .install-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            z-index: 1000;
+        }
+
+        .install-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
         @media (max-width: 1024px) {
             .content-grid {
                 grid-template-columns: 1fr;
                 gap: 20px;
+            }
+            
+            .theme-toggle {
+                position: fixed;
+                top: 10px;
+                right: 10px;
+                z-index: 100;
             }
         }
 
@@ -502,6 +603,13 @@
             .plane-icon { transform: rotate(90deg); }
             .flight-details { grid-template-columns: 1fr 1fr; }
             .weather-card { flex-direction: column; text-align: center; }
+            
+            .install-btn {
+                bottom: 10px;
+                right: 10px;
+                padding: 12px 16px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -510,6 +618,10 @@
     
     <div class="container">
         <header class="header">
+            <div class="theme-toggle" onclick="toggleTheme()">
+                <i class="theme-icon" data-lucide="sun" id="themeIcon"></i>
+            </div>
+            
             <div class="logo">
                 <div class="logo-icon">
                     <i data-lucide="plane" size="40" color="white"></i>
@@ -545,7 +657,7 @@
         <div id="results"></div>
 
         <div class="monitor-section" id="monitorSection" style="display: none;">
-            <h3 style="color: white; margin-bottom: 15px;">
+            <h3 style="color: var(--text-white); margin-bottom: 15px;">
                 <i data-lucide="refresh-cw" size="20" style="vertical-align: middle; margin-right: 8px;"></i>
                 Monitoraggio Smart
             </h3>
@@ -557,21 +669,27 @@
                 <i data-lucide="stop" size="16"></i>
                 Ferma Monitoraggio
             </button>
-            <div id="monitorStatus" style="margin-top: 15px; color: rgba(255,255,255,0.8);"></div>
+            <div id="monitorStatus" style="margin-top: 15px; color: var(--text-white);"></div>
         </div>
     </div>
+
+    <!-- PWA Install Button -->
+    <button class="install-btn" id="installBtn" style="display: none;">
+        <i data-lucide="download" size="16"></i>
+        Installa App
+    </button>
 
     <script>
         // Configurazione
         const NETLIFY_FUNCTION_URL = '/.netlify/functions/flight-search';
-        const WEATHER_API_KEY = 'your_weather_api_key'; // Sostituisci con chiave OpenWeatherMap
+        const WEATHER_API_KEY = 'your_weather_api_key';
         
         let monitoringInterval = null;
         let currentFlight = null;
+        let deferredPrompt = null;
 
         // Database coordinate aeroporti principali
         const airportCoords = {
-            // Nord America
             'JFK': { lat: 40.6413, lon: -73.7781, city: 'New York', tz: 'America/New_York' },
             'LAX': { lat: 33.9428, lon: -118.4081, city: 'Los Angeles', tz: 'America/Los_Angeles' },
             'ORD': { lat: 41.9742, lon: -87.9073, city: 'Chicago', tz: 'America/Chicago' },
@@ -579,8 +697,6 @@
             'ATL': { lat: 33.6407, lon: -84.4277, city: 'Atlanta', tz: 'America/New_York' },
             'IAH': { lat: 29.9902, lon: -95.3368, city: 'Houston', tz: 'America/Chicago' },
             'MIA': { lat: 25.7959, lon: -80.2870, city: 'Miami', tz: 'America/New_York' },
-            
-            // Europa
             'LHR': { lat: 51.4700, lon: -0.4543, city: 'London', tz: 'Europe/London' },
             'CDG': { lat: 49.0097, lon: 2.5479, city: 'Paris', tz: 'Europe/Paris' },
             'FRA': { lat: 50.0375, lon: 8.5622, city: 'Frankfurt', tz: 'Europe/Berlin' },
@@ -591,21 +707,98 @@
             'MAD': { lat: 40.4839, lon: -3.5680, city: 'Madrid', tz: 'Europe/Madrid' },
             'BER': { lat: 52.3667, lon: 13.5033, city: 'Berlin', tz: 'Europe/Berlin' },
             'MUC': { lat: 48.3538, lon: 11.7861, city: 'Munich', tz: 'Europe/Berlin' },
-            
-            // Asia Pacifico
             'NRT': { lat: 35.7720, lon: 140.3929, city: 'Tokyo', tz: 'Asia/Tokyo' },
             'ICN': { lat: 37.4602, lon: 126.4407, city: 'Seoul', tz: 'Asia/Seoul' },
             'SIN': { lat: 1.3644, lon: 103.9915, city: 'Singapore', tz: 'Asia/Singapore' },
             'HKG': { lat: 22.3080, lon: 113.9185, city: 'Hong Kong', tz: 'Asia/Hong_Kong' },
             'SYD': { lat: -33.9399, lon: 151.1753, city: 'Sydney', tz: 'Australia/Sydney' },
-            
-            // Altri
             'DXB': { lat: 25.2532, lon: 55.3657, city: 'Dubai', tz: 'Asia/Dubai' },
             'DOH': { lat: 25.2731, lon: 51.6078, city: 'Doha', tz: 'Asia/Qatar' },
             'OGG': { lat: 20.8987, lon: -156.4308, city: 'Kahului', tz: 'Pacific/Honolulu' }
         };
 
-        // Crea stelle animate
+        // Theme Management (with error handling)
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('themeIcon');
+            const currentTheme = body.getAttribute('data-theme');
+            
+            if (currentTheme === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.setAttribute('data-lucide', 'moon');
+                try {
+                    localStorage.setItem('theme', 'light');
+                } catch (error) {
+                    console.log('Could not save theme preference');
+                }
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.setAttribute('data-lucide', 'sun');
+                try {
+                    localStorage.setItem('theme', 'dark');
+                } catch (error) {
+                    console.log('Could not save theme preference');
+                }
+            }
+            
+            // Reinitialize icons
+            initLucide();
+        }
+
+        // Load saved theme (with error handling)
+        function loadTheme() {
+            try {
+                const savedTheme = localStorage.getItem('theme');
+                const themeIcon = document.getElementById('themeIcon');
+                
+                if (savedTheme === 'dark') {
+                    document.body.setAttribute('data-theme', 'dark');
+                    themeIcon.setAttribute('data-lucide', 'sun');
+                } else {
+                    themeIcon.setAttribute('data-lucide', 'moon');
+                }
+            } catch (error) {
+                console.log('localStorage not available, using default theme');
+                // Fallback to light theme if localStorage is not available
+            }
+        }
+
+        // PWA Installation
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBtn').style.display = 'flex';
+        });
+
+        document.getElementById('installBtn').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    document.getElementById('installBtn').style.display = 'none';
+                }
+                deferredPrompt = null;
+            }
+        });
+
+        // Register Service Worker (with proper error handling)
+        if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js', {
+                    scope: './'
+                })
+                .then((registration) => {
+                    console.log('SW registered successfully:', registration.scope);
+                })
+                .catch((registrationError) => {
+                    console.log('SW registration failed:', registrationError);
+                });
+            });
+        } else {
+            console.log('Service Worker not supported or not on HTTPS');
+        }
+
+        // Existing functions (keep all the previous flight tracking logic)
         function createStars() {
             const starsContainer = document.getElementById('stars');
             for (let i = 0; i < 100; i++) {
@@ -618,37 +811,25 @@
             }
         }
 
-        // Inizializza le icone Lucide
         function initLucide() {
             if (typeof lucide !== 'undefined') {
                 lucide.createIcons();
             }
         }
 
-        // Ottieni meteo per coordinate
         async function getWeatherData(lat, lon, cityName) {
-            try {
-                // API OpenWeatherMap gratuita (richiede registrazione)
-                const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}&units=metric&lang=it`;
-                
-                // Per demo, simuliamo dati meteo
-                return {
-                    city: cityName,
-                    temp: Math.round(15 + Math.random() * 20),
-                    description: ['Sereno', 'Nuvoloso', 'Parzialmente nuvoloso', 'Pioggia leggera'][Math.floor(Math.random() * 4)],
-                    icon: ['☀️', '☁️', '⛅', '🌧️'][Math.floor(Math.random() * 4)],
-                    humidity: Math.round(40 + Math.random() * 40),
-                    wind: Math.round(5 + Math.random() * 15)
-                };
-            } catch (error) {
-                console.error('Errore meteo:', error);
-                return null;
-            }
+            return {
+                city: cityName,
+                temp: Math.round(15 + Math.random() * 20),
+                description: ['Sereno', 'Nuvoloso', 'Parzialmente nuvoloso', 'Pioggia leggera'][Math.floor(Math.random() * 4)],
+                icon: ['☀️', '☁️', '⛅', '🌧️'][Math.floor(Math.random() * 4)],
+                humidity: Math.round(40 + Math.random() * 40),
+                wind: Math.round(5 + Math.random() * 15)
+            };
         }
 
-        // Calcola distanza tra due punti
         function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Radio della Terra in km
+            const R = 6371;
             const dLat = (lat2 - lat1) * Math.PI / 180;
             const dLon = (lon2 - lon1) * Math.PI / 180;
             const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
@@ -658,16 +839,14 @@
             return Math.round(R * c);
         }
 
-        // Calcola durata volo stimata
         function calculateFlightDuration(distance) {
-            const avgSpeed = 850; // km/h velocità media commerciale
+            const avgSpeed = 850;
             const hours = distance / avgSpeed;
             const h = Math.floor(hours);
             const m = Math.round((hours - h) * 60);
             return `${h}h ${m}m`;
         }
 
-        // Ottieni orario locale
         function getLocalTime(timezone) {
             try {
                 return new Date().toLocaleTimeString('it-IT', {
@@ -680,7 +859,6 @@
             }
         }
 
-        // Funzione per ottenere informazioni volo
         async function getFlightByIATA(flightIATA) {
             try {
                 const url = `${NETLIFY_FUNCTION_URL}?flight_iata=${encodeURIComponent(flightIATA)}`;
@@ -702,7 +880,6 @@
             }
         }
 
-        // Formatta data/ora
         function formatDateTime(dateString) {
             if (!dateString) return 'N/A';
             try {
@@ -718,7 +895,6 @@
             }
         }
 
-        // Ottieni classe CSS per status
         function getStatusClass(status) {
             const statusMap = {
                 'active': 'status-active',
@@ -729,7 +905,6 @@
             return statusMap[status] || 'status-scheduled';
         }
 
-        // Traduci status
         function translateStatus(status) {
             const translations = {
                 'active': 'In Volo',
@@ -741,7 +916,6 @@
             return translations[status] || status;
         }
 
-        // Renderizza meteo
         function renderWeather(departureWeather, arrivalWeather, depCode, arrCode) {
             if (!departureWeather && !arrivalWeather) return '';
             
@@ -775,7 +949,6 @@
             `;
         }
 
-        // Renderizza info viaggio
         function renderTravelInfo(flight, distance, duration, depInfo, arrInfo) {
             return `
                 <div class="info-section">
@@ -824,7 +997,6 @@
             `;
         }
 
-        // Renderizza risultato volo completo
         async function renderFlightResult(flight) {
             const hasLiveData = flight.live && (flight.live.latitude || flight.live.longitude);
             
@@ -833,7 +1005,6 @@
             const depInfo = airportCoords[depCode];
             const arrInfo = airportCoords[arrCode];
 
-            // Calcola info viaggio
             let distance = 0;
             let duration = 'N/A';
             if (depInfo && arrInfo) {
@@ -841,7 +1012,6 @@
                 duration = calculateFlightDuration(distance);
             }
 
-            // Ottieni dati meteo (simulati per demo)
             let departureWeather = null;
             let arrivalWeather = null;
             
@@ -857,7 +1027,7 @@
                     <div class="flight-header">
                         <div class="flight-number">
                             ${flight.flight?.iata || 'N/A'}
-                            ${flight.airline?.name ? `<div style="font-size: 0.6em; color: #7f8c8d; font-weight: 400;">${flight.airline.name}</div>` : ''}
+                            ${flight.airline?.name ? `<div style="font-size: 0.6em; color: var(--text-secondary); font-weight: 400;">${flight.airline.name}</div>` : ''}
                         </div>
                         <div style="display: flex; gap: 10px; align-items: center;">
                             <span class="status-badge ${getStatusClass(flight.flight_status)}">
@@ -874,7 +1044,7 @@
                             <div class="time">
                                 <strong>Partenza:</strong><br>
                                 ${formatDateTime(flight.departure?.scheduled)}
-                                ${flight.departure?.delay ? `<div style="color: #e74c3c; font-size: 0.9em;">Ritardo: ${flight.departure.delay}min</div>` : ''}
+                                ${flight.departure?.delay ? `<div style="color: var(--accent-red); font-size: 0.9em;">Ritardo: ${flight.departure.delay}min</div>` : ''}
                             </div>
                         </div>
                         
@@ -888,7 +1058,7 @@
                             <div class="time">
                                 <strong>Arrivo:</strong><br>
                                 ${formatDateTime(flight.arrival?.scheduled)}
-                                ${flight.arrival?.delay ? `<div style="color: #e74c3c; font-size: 0.9em;">Ritardo: ${flight.arrival.delay}min</div>` : ''}
+                                ${flight.arrival?.delay ? `<div style="color: var(--accent-red); font-size: 0.9em;">Ritardo: ${flight.arrival.delay}min</div>` : ''}
                             </div>
                         </div>
                     </div>
@@ -948,7 +1118,6 @@
             `;
         }
 
-        // Mostra errore
         function showError(message) {
             document.getElementById('results').innerHTML = `
                 <div class="error-message">
@@ -959,7 +1128,6 @@
             initLucide();
         }
 
-        // Ricerca volo
         async function searchFlight(flightCode) {
             const loading = document.getElementById('loading');
             const results = document.getElementById('results');
@@ -987,7 +1155,6 @@
             }
         }
 
-        // Monitoraggio intelligente
         function startMonitoring() {
             if (!currentFlight) return;
             
@@ -1023,7 +1190,6 @@
                 try {
                     const updatedFlight = await getFlightByIATA(flightCode);
                     if (updatedFlight) {
-                        // Controlla se ci sono cambiamenti significativi
                         const hasChanges = 
                             currentFlight.flight_status !== updatedFlight.flight_status ||
                             currentFlight.departure?.gate !== updatedFlight.departure?.gate ||
@@ -1034,17 +1200,12 @@
                         initLucide();
                         
                         updateStatus(hasChanges ? 'flight' : 'general');
-                        
-                        // Potenziale notifica per cambiamenti importanti
-                        if (hasChanges && 'Notification' in window) {
-                            // Richiedere permesso notifiche (opzionale)
-                        }
                     }
                 } catch (error) {
                     console.error('Errore nel monitoraggio:', error);
                     updateStatus('error');
                 }
-            }, 90000); // Aggiorna ogni 90 secondi (più efficiente)
+            }, 90000);
         }
 
         function stopMonitoring() {
@@ -1059,7 +1220,7 @@
             
             startBtn.style.display = 'inline-flex';
             stopBtn.style.display = 'none';
-            status.innerHTML = '<span style="color: rgba(255,255,255,0.6);">Monitoraggio fermato</span>';
+            status.innerHTML = '<span style="color: var(--text-white); opacity: 0.6;">Monitoraggio fermato</span>';
         }
 
         // Event listeners
@@ -1076,17 +1237,16 @@
 
         // Inizializzazione
         document.addEventListener('DOMContentLoaded', () => {
+            loadTheme();
             createStars();
             initLucide();
             
-            // Esempi suggeriti
             const examples = ['LH441', 'AA123', 'AZ205', 'BA178'];
             const randomExample = examples[Math.floor(Math.random() * examples.length)];
             document.getElementById('flightInput').placeholder = 
                 `Inserisci codice volo (es. ${randomExample}, ${examples.filter(e => e !== randomExample).slice(0,2).join(', ')})`;
         });
 
-        // Cleanup
         window.addEventListener('beforeunload', () => {
             if (monitoringInterval) {
                 clearInterval(monitoringInterval);
