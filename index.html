@@ -718,8 +718,9 @@
         let currentFlight = null;
         let deferredPrompt = null;
 
-        // Database coordinate aeroporti principali
+        // Database coordinate aeroporti principali (ESPANSO)
         const airportCoords = {
+            // USA
             'JFK': { lat: 40.6413, lon: -73.7781, city: 'New York', tz: 'America/New_York' },
             'LAX': { lat: 33.9428, lon: -118.4081, city: 'Los Angeles', tz: 'America/Los_Angeles' },
             'ORD': { lat: 41.9742, lon: -87.9073, city: 'Chicago', tz: 'America/Chicago' },
@@ -727,23 +728,100 @@
             'ATL': { lat: 33.6407, lon: -84.4277, city: 'Atlanta', tz: 'America/New_York' },
             'IAH': { lat: 29.9902, lon: -95.3368, city: 'Houston', tz: 'America/Chicago' },
             'MIA': { lat: 25.7959, lon: -80.2870, city: 'Miami', tz: 'America/New_York' },
+            
+            // Europa Occidentale
             'LHR': { lat: 51.4700, lon: -0.4543, city: 'London', tz: 'Europe/London' },
+            'LGW': { lat: 51.1481, lon: -0.1903, city: 'London Gatwick', tz: 'Europe/London' },
+            'STN': { lat: 51.8849, lon: 0.2348, city: 'London Stansted', tz: 'Europe/London' },
             'CDG': { lat: 49.0097, lon: 2.5479, city: 'Paris', tz: 'Europe/Paris' },
+            'ORY': { lat: 48.7262, lon: 2.3659, city: 'Paris Orly', tz: 'Europe/Paris' },
             'FRA': { lat: 50.0375, lon: 8.5622, city: 'Frankfurt', tz: 'Europe/Berlin' },
             'AMS': { lat: 52.3105, lon: 4.7683, city: 'Amsterdam', tz: 'Europe/Amsterdam' },
-            'FCO': { lat: 41.8003, lon: 12.2389, city: 'Rome', tz: 'Europe/Rome' },
-            'MXP': { lat: 45.6306, lon: 8.7231, city: 'Milan', tz: 'Europe/Rome' },
+            'BRU': { lat: 50.9014, lon: 4.4844, city: 'Brussels', tz: 'Europe/Brussels' },
+            
+            // Svizzera
+            'GVA': { lat: 46.2381, lon: 6.1090, city: 'Geneva', tz: 'Europe/Zurich' },
+            'ZUR': { lat: 47.4647, lon: 8.5492, city: 'Zurich', tz: 'Europe/Zurich' },
+            'BSL': { lat: 47.5896, lon: 7.5298, city: 'Basel', tz: 'Europe/Zurich' },
+            
+            // Italia
+            'FCO': { lat: 41.8003, lon: 12.2389, city: 'Rome Fiumicino', tz: 'Europe/Rome' },
+            'CIA': { lat: 41.7994, lon: 12.5949, city: 'Rome Ciampino', tz: 'Europe/Rome' },
+            'MXP': { lat: 45.6306, lon: 8.7231, city: 'Milan Malpensa', tz: 'Europe/Rome' },
+            'LIN': { lat: 45.4454, lon: 9.2767, city: 'Milan Linate', tz: 'Europe/Rome' },
+            'BGY': { lat: 45.6739, lon: 9.7042, city: 'Bergamo', tz: 'Europe/Rome' },
+            'VCE': { lat: 45.5053, lon: 12.3519, city: 'Venice', tz: 'Europe/Rome' },
+            'TSF': { lat: 45.8275, lon: 13.4722, city: 'Treviso', tz: 'Europe/Rome' },
+            'NAP': { lat: 40.8860, lon: 14.2908, city: 'Naples', tz: 'Europe/Rome' },
+            'PSA': { lat: 43.6839, lon: 10.3927, city: 'Pisa', tz: 'Europe/Rome' },
+            'FLR': { lat: 43.8100, lon: 11.2051, city: 'Florence', tz: 'Europe/Rome' },
+            'BLQ': { lat: 44.5354, lon: 11.2887, city: 'Bologna', tz: 'Europe/Rome' },
+            'GOA': { lat: 44.4133, lon: 8.8375, city: 'Genoa', tz: 'Europe/Rome' },
+            'TRN': { lat: 45.2008, lon: 7.6497, city: 'Turin', tz: 'Europe/Rome' },
+            'BRI': { lat: 41.1389, lon: 16.7606, city: 'Bari', tz: 'Europe/Rome' },
+            'BDS': { lat: 40.6567, lon: 17.9472, city: 'Brindisi', tz: 'Europe/Rome' },
+            'CTA': { lat: 37.4658, lon: 15.0664, city: 'Catania', tz: 'Europe/Rome' },
+            'PMO': { lat: 38.1759, lon: 13.0910, city: 'Palermo', tz: 'Europe/Rome' },
+            'CAG': { lat: 39.2515, lon: 9.0543, city: 'Cagliari', tz: 'Europe/Rome' },
+            'OLB': { lat: 40.8986, lon: 9.5176, city: 'Olbia', tz: 'Europe/Rome' },
+            
+            // Spagna
             'BCN': { lat: 41.2974, lon: 2.0833, city: 'Barcelona', tz: 'Europe/Madrid' },
             'MAD': { lat: 40.4839, lon: -3.5680, city: 'Madrid', tz: 'Europe/Madrid' },
+            'PMI': { lat: 39.5517, lon: 2.7388, city: 'Palma de Mallorca', tz: 'Europe/Madrid' },
+            'SVQ': { lat: 37.4180, lon: -5.8931, city: 'Seville', tz: 'Europe/Madrid' },
+            'VLC': { lat: 39.4893, lon: -0.4816, city: 'Valencia', tz: 'Europe/Madrid' },
+            'AGP': { lat: 36.6749, lon: -4.4991, city: 'Malaga', tz: 'Europe/Madrid' },
+            
+            // Germania
             'BER': { lat: 52.3667, lon: 13.5033, city: 'Berlin', tz: 'Europe/Berlin' },
             'MUC': { lat: 48.3538, lon: 11.7861, city: 'Munich', tz: 'Europe/Berlin' },
+            'DUS': { lat: 51.2895, lon: 6.7668, city: 'Düsseldorf', tz: 'Europe/Berlin' },
+            'HAM': { lat: 53.6304, lon: 9.9882, city: 'Hamburg', tz: 'Europe/Berlin' },
+            'CGN': { lat: 50.8659, lon: 7.1427, city: 'Cologne', tz: 'Europe/Berlin' },
+            'STR': { lat: 48.6896, lon: 9.2218, city: 'Stuttgart', tz: 'Europe/Berlin' },
+            
+            // Francia
+            'NCE': { lat: 43.6584, lon: 7.2159, city: 'Nice', tz: 'Europe/Paris' },
+            'LYS': { lat: 45.7256, lon: 5.0811, city: 'Lyon', tz: 'Europe/Paris' },
+            'MRS': { lat: 43.4393, lon: 5.2214, city: 'Marseille', tz: 'Europe/Paris' },
+            'TLS': { lat: 43.6285, lon: 1.3638, city: 'Toulouse', tz: 'Europe/Paris' },
+            'BOD': { lat: 44.8283, lon: -0.7156, city: 'Bordeaux', tz: 'Europe/Paris' },
+            
+            // Altri Paesi Europei
+            'VIE': { lat: 48.1103, lon: 16.5697, city: 'Vienna', tz: 'Europe/Vienna' },
+            'PRG': { lat: 50.1008, lon: 14.2632, city: 'Prague', tz: 'Europe/Prague' },
+            'WAW': { lat: 52.1657, lon: 20.9671, city: 'Warsaw', tz: 'Europe/Warsaw' },
+            'BUD': { lat: 47.4394, lon: 19.2614, city: 'Budapest', tz: 'Europe/Budapest' },
+            'ARN': { lat: 59.6519, lon: 17.9186, city: 'Stockholm', tz: 'Europe/Stockholm' },
+            'CPH': { lat: 55.6181, lon: 12.6561, city: 'Copenhagen', tz: 'Europe/Copenhagen' },
+            'OSL': { lat: 60.1939, lon: 11.1004, city: 'Oslo', tz: 'Europe/Oslo' },
+            'HEL': { lat: 60.3172, lon: 24.9633, city: 'Helsinki', tz: 'Europe/Helsinki' },
+            
+            // Grecia
+            'ATH': { lat: 37.9364, lon: 23.9445, city: 'Athens', tz: 'Europe/Athens' },
+            'SKG': { lat: 40.5197, lon: 22.9709, city: 'Thessaloniki', tz: 'Europe/Athens' },
+            'HER': { lat: 35.3387, lon: 25.1803, city: 'Heraklion', tz: 'Europe/Athens' },
+            'RHO': { lat: 36.4054, lon: 28.0862, city: 'Rhodes', tz: 'Europe/Athens' },
+            
+            // Portogallo
+            'LIS': { lat: 38.7813, lon: -9.1363, city: 'Lisbon', tz: 'Europe/Lisbon' },
+            'OPO': { lat: 41.2481, lon: -8.6814, city: 'Porto', tz: 'Europe/Lisbon' },
+            'FAO': { lat: 37.0144, lon: -7.9658, city: 'Faro', tz: 'Europe/Lisbon' },
+            
+            // Asia
             'NRT': { lat: 35.7720, lon: 140.3929, city: 'Tokyo', tz: 'Asia/Tokyo' },
             'ICN': { lat: 37.4602, lon: 126.4407, city: 'Seoul', tz: 'Asia/Seoul' },
             'SIN': { lat: 1.3644, lon: 103.9915, city: 'Singapore', tz: 'Asia/Singapore' },
             'HKG': { lat: 22.3080, lon: 113.9185, city: 'Hong Kong', tz: 'Asia/Hong_Kong' },
             'SYD': { lat: -33.9399, lon: 151.1753, city: 'Sydney', tz: 'Australia/Sydney' },
+            
+            // Medio Oriente
             'DXB': { lat: 25.2532, lon: 55.3657, city: 'Dubai', tz: 'Asia/Dubai' },
             'DOH': { lat: 25.2731, lon: 51.6078, city: 'Doha', tz: 'Asia/Qatar' },
+            'IST': { lat: 41.2753, lon: 28.7519, city: 'Istanbul', tz: 'Europe/Istanbul' },
+            
+            // Altri
             'OGG': { lat: 20.8987, lon: -156.4308, city: 'Kahului', tz: 'Pacific/Honolulu' }
         };
 
@@ -899,26 +977,22 @@
             if (!dateString) return 'N/A';
             
             try {
-                let date;
-                
-                // L'API potrebbe restituire orari che il browser interpreta come locali invece che UTC
-                // Forziamo l'interpretazione come UTC se necessario
-                if (dateString.includes('T') && !dateString.includes('Z') && !dateString.includes('+')) {
-                    // Se manca l'indicatore UTC, aggiungilo
-                    date = new Date(dateString + 'Z');
-                } else {
-                    date = new Date(dateString);
-                }
+                let date = new Date(dateString);
                 
                 // Verifica se la data è valida
                 if (isNaN(date.getTime())) {
                     return 'N/A';
                 }
                 
+                // CORREZIONE: L'API sembra restituire orari già con +2 ore di offset
+                // Dobbiamo sottrarre 2 ore per ottenere l'orario corretto
+                // Questo potrebbe essere dovuto a un double-adjustment del timezone
+                const correctedDate = new Date(date.getTime() - (2 * 60 * 60 * 1000)); // Sottrai 2 ore
+                
                 // Se abbiamo un timezone specifico, usa quello
                 if (timezone) {
                     try {
-                        return date.toLocaleString('it-IT', {
+                        return correctedDate.toLocaleString('it-IT', {
                             timeZone: timezone,
                             day: '2-digit',
                             month: '2-digit',
@@ -931,8 +1005,8 @@
                     }
                 }
                 
-                // Fallback: usa il timezone locale del browser
-                return date.toLocaleString('it-IT', {
+                // Fallback: usa il timezone locale del browser con la data corretta
+                return correctedDate.toLocaleString('it-IT', {
                     day: '2-digit',
                     month: '2-digit',
                     hour: '2-digit',
