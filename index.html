@@ -894,6 +894,70 @@
             }
         }
 
+        // FUNZIONE CORRETTA: Formatta data/ora gestendo correttamente UTC e fusi orari
+        function formatDateTime(dateString, timezone = null) {
+            if (!dateString) return 'N/A';
+            
+            try {
+                let date;
+                
+                // L'API potrebbe restituire orari che il browser interpreta come locali invece che UTC
+                // Forziamo l'interpretazione come UTC se necessario
+                if (dateString.includes('T') && !dateString.includes('Z') && !dateString.includes('+')) {
+                    // Se manca l'indicatore UTC, aggiungilo
+                    date = new Date(dateString + 'Z');
+                } else {
+                    date = new Date(dateString);
+                }
+                
+                // Verifica se la data è valida
+                if (isNaN(date.getTime())) {
+                    return 'N/A';
+                }
+                
+                // Se abbiamo un timezone specifico, usa quello
+                if (timezone) {
+                    try {
+                        return date.toLocaleString('it-IT', {
+                            timeZone: timezone,
+                            day: '2-digit',
+                            month: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                    } catch (tzError) {
+                        console.log(`Errore timezone ${timezone}:`, tzError);
+                        // Fallback al timezone locale se il timezone specifico non funziona
+                    }
+                }
+                
+                // Fallback: usa il timezone locale del browser
+                return date.toLocaleString('it-IT', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+            } catch (error) {
+                console.log('Errore nel parsing della data:', error);
+                return 'N/A';
+            }
+        }
+
+        // FUNZIONE AGGIUNTIVA: Converti UTC in orario locale specifico dell'aeroporto
+        function formatDateTimeForAirport(dateString, airportCode) {
+            if (!dateString || !airportCode) return 'N/A';
+            
+            const airportInfo = airportCoords[airportCode];
+            if (airportInfo && airportInfo.tz) {
+                return formatDateTime(dateString, airportInfo.tz);
+            }
+            
+            // Se non abbiamo info sul timezone dell'aeroporto, usa il locale
+            return formatDateTime(dateString);
+        }
+
         // Funzione per ottenere informazioni volo con codici multipli
         async function getFlightByIATA(flightIATA) {
             const originalCode = flightIATA.toUpperCase();
@@ -964,22 +1028,6 @@
             
             // Se nessuna variante funziona
             throw new Error(`Volo non trovato. Provato con: ${codeVariants.join(', ')}`);
-        }
-
-        // Formatta data/ora
-        function formatDateTime(dateString) {
-            if (!dateString) return 'N/A';
-            try {
-                const date = new Date(dateString);
-                return date.toLocaleString('it-IT', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-            } catch {
-                return 'N/A';
-            }
         }
 
         // Ottieni classe CSS per status
@@ -1088,7 +1136,7 @@
             `;
         }
 
-        // Renderizza risultato volo completo
+        // Renderizza risultato volo completo con orari corretti
         async function renderFlightResult(flight) {
             const hasLiveData = flight.live && (flight.live.latitude || flight.live.longitude);
             
@@ -1137,7 +1185,7 @@
                             <div class="airport-name">${flight.departure?.airport || 'Aeroporto di partenza'}</div>
                             <div class="time">
                                 <strong>Partenza:</strong><br>
-                                ${formatDateTime(flight.departure?.scheduled, depInfo?.tz)}
+                                ${formatDateTimeForAirport(flight.departure?.scheduled, depCode)}
                                 ${flight.departure?.delay ? `<div style="color: var(--accent-red); font-size: 0.9em;">Ritardo: ${flight.departure.delay}min</div>` : ''}
                                 ${depInfo?.tz ? `<div style="font-size: 0.8em; color: var(--text-secondary); margin-top: 4px;">Ora locale ${depInfo.city}</div>` : ''}
                             </div>
@@ -1152,7 +1200,7 @@
                             <div class="airport-name">${flight.arrival?.airport || 'Aeroporto di arrivo'}</div>
                             <div class="time">
                                 <strong>Arrivo:</strong><br>
-                                ${formatDateTime(flight.arrival?.scheduled, arrInfo?.tz)}
+                                ${formatDateTimeForAirport(flight.arrival?.scheduled, arrCode)}
                                 ${flight.arrival?.delay ? `<div style="color: var(--accent-red); font-size: 0.9em;">Ritardo: ${flight.arrival.delay}min</div>` : ''}
                                 ${arrInfo?.tz ? `<div style="font-size: 0.8em; color: var(--text-secondary); margin-top: 4px;">Ora locale ${arrInfo.city}</div>` : ''}
                             </div>
