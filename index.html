@@ -954,7 +954,15 @@
                     
                     if (response.ok && data.data && data.data.length > 0) {
                         console.log(`✅ Volo trovato con codice: ${variant}`);
-                        return data.data[0];
+                        // Debug orari per capire il formato
+                        const flight = data.data[0];
+                        console.log('Debug orari API:', {
+                            departure_scheduled: flight.departure?.scheduled,
+                            arrival_scheduled: flight.arrival?.scheduled,
+                            departure_timezone: flight.departure?.timezone,
+                            arrival_timezone: flight.arrival?.timezone
+                        });
+                        return flight;
                     }
                 } catch (error) {
                     console.log(`❌ Errore con codice ${variant}:`, error.message);
@@ -1137,9 +1145,9 @@
                             <div class="airport-name">${flight.departure?.airport || 'Aeroporto di partenza'}</div>
                             <div class="time">
                                 <strong>Partenza:</strong><br>
-                                ${formatDateTime(flight.departure?.scheduled, depInfo?.tz)}
+                                ${formatDateTime(parseFlightTime(flight.departure?.scheduled))}
                                 ${flight.departure?.delay ? `<div style="color: var(--accent-red); font-size: 0.9em;">Ritardo: ${flight.departure.delay}min</div>` : ''}
-                                ${depInfo?.tz ? `<div style="font-size: 0.8em; color: var(--text-secondary); margin-top: 4px;">Ora locale ${depInfo.city}</div>` : ''}
+                                ${depInfo ? `<div style="font-size: 0.8em; color: var(--text-secondary); margin-top: 4px;">Ora locale ${depInfo.city}</div>` : ''}
                             </div>
                         </div>
                         
@@ -1152,9 +1160,9 @@
                             <div class="airport-name">${flight.arrival?.airport || 'Aeroporto di arrivo'}</div>
                             <div class="time">
                                 <strong>Arrivo:</strong><br>
-                                ${formatDateTime(flight.arrival?.scheduled, arrInfo?.tz)}
+                                ${formatDateTime(parseFlightTime(flight.arrival?.scheduled))}
                                 ${flight.arrival?.delay ? `<div style="color: var(--accent-red); font-size: 0.9em;">Ritardo: ${flight.arrival.delay}min</div>` : ''}
-                                ${arrInfo?.tz ? `<div style="font-size: 0.8em; color: var(--text-secondary); margin-top: 4px;">Ora locale ${arrInfo.city}</div>` : ''}
+                                ${arrInfo ? `<div style="font-size: 0.8em; color: var(--text-secondary); margin-top: 4px;">Ora locale ${arrInfo.city}</div>` : ''}
                             </div>
                         </div>
                     </div>
