@@ -894,26 +894,76 @@
             }
         }
 
-        // Funzione per ottenere informazioni volo
+        // Funzione per ottenere informazioni volo con codici multipli
         async function getFlightByIATA(flightIATA) {
-            try {
-                const url = `${NETLIFY_FUNCTION_URL}?flight_iata=${encodeURIComponent(flightIATA)}`;
-                const response = await fetch(url);
-                const data = await response.json();
-                
-                if (!response.ok) {
-                    throw new Error(data.error || `HTTP Error: ${response.status}`);
+            const originalCode = flightIATA.toUpperCase();
+            
+            // Lista di varianti da provare
+            const codeVariants = [
+                originalCode,                    // Codice originale
+                originalCode.replace(/\s+/g, ''), // Rimuovi spazi
+                originalCode.replace(/(\D+)(\d+)/, '$1 $2'), // Aggiungi spazio tra lettere e numeri
+            ];
+            
+            // Mappatura codici ICAO -> IATA comuni
+            const icaoToIata = {
+                'EZS': 'U2',    // EasyJet
+                'EZY': 'U2',    // EasyJet (callsign)
+                'RYR': 'FR',    // Ryanair
+                'DLH': 'LH',    // Lufthansa
+                'BAW': 'BA',    // British Airways
+                'AFR': 'AF',    // Air France
+                'KLM': 'KL',    // KLM
+                'AZA': 'AZ',    // ITA Airways
+                'UAE': 'EK',    // Emirates
+                'QTR': 'QR',    // Qatar Airways
+                'THY': 'TK',    // Turkish Airlines
+                'SWR': 'LX',    // Swiss
+                'AUA': 'OS',    // Austrian
+                'IBE': 'IB',    // Iberia
+                'TAP': 'TP',    // TAP Air Portugal
+                'SAS': 'SK',    // SAS
+                'FIN': 'AY',    // Finnair
+                'LOT': 'LO',    // LOT Polish
+                'CSA': 'OK',    // Czech Airlines
+                'AAL': 'AA',    // American Airlines
+                'UAL': 'UA',    // United Airlines
+                'DAL': 'DL',    // Delta
+                'JBU': 'B6',    // JetBlue
+                'SWA': 'WN',    // Southwest
+            };
+            
+            // Aggiungi varianti ICAO->IATA
+            const codeMatch = originalCode.match(/^([A-Z]{2,3})(\d+)$/);
+            if (codeMatch) {
+                const [, prefix, number] = codeMatch;
+                if (icaoToIata[prefix]) {
+                    codeVariants.push(`${icaoToIata[prefix]}${number}`);
+                    codeVariants.push(`${icaoToIata[prefix]} ${number}`);
                 }
-                
-                if (data.error) {
-                    throw new Error(`API Error: ${data.error.message || 'Errore sconosciuto'}`);
-                }
-                
-                return data.data && data.data.length > 0 ? data.data[0] : null;
-            } catch (error) {
-                console.error('Errore API:', error);
-                throw error;
             }
+            
+            // Prova ogni variante
+            for (const variant of codeVariants) {
+                try {
+                    console.log(`Tentativo con codice: ${variant}`);
+                    
+                    const url = `${NETLIFY_FUNCTION_URL}?flight_iata=${encodeURIComponent(variant)}`;
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    
+                    if (response.ok && data.data && data.data.length > 0) {
+                        console.log(`✅ Volo trovato con codice: ${variant}`);
+                        return data.data[0];
+                    }
+                } catch (error) {
+                    console.log(`❌ Errore con codice ${variant}:`, error.message);
+                    continue;
+                }
+            }
+            
+            // Se nessuna variante funziona
+            throw new Error(`Volo non trovato. Provato con: ${codeVariants.join(', ')}`);
         }
 
         // Formatta data/ora
@@ -1087,8 +1137,9 @@
                             <div class="airport-name">${flight.departure?.airport || 'Aeroporto di partenza'}</div>
                             <div class="time">
                                 <strong>Partenza:</strong><br>
-                                ${formatDateTime(flight.departure?.scheduled)}
+                                ${formatDateTime(flight.departure?.scheduled, depInfo?.tz)}
                                 ${flight.departure?.delay ? `<div style="color: var(--accent-red); font-size: 0.9em;">Ritardo: ${flight.departure.delay}min</div>` : ''}
+                                ${depInfo?.tz ? `<div style="font-size: 0.8em; color: var(--text-secondary); margin-top: 4px;">Ora locale ${depInfo.city}</div>` : ''}
                             </div>
                         </div>
                         
@@ -1101,8 +1152,9 @@
                             <div class="airport-name">${flight.arrival?.airport || 'Aeroporto di arrivo'}</div>
                             <div class="time">
                                 <strong>Arrivo:</strong><br>
-                                ${formatDateTime(flight.arrival?.scheduled)}
+                                ${formatDateTime(flight.arrival?.scheduled, arrInfo?.tz)}
                                 ${flight.arrival?.delay ? `<div style="color: var(--accent-red); font-size: 0.9em;">Ritardo: ${flight.arrival.delay}min</div>` : ''}
+                                ${arrInfo?.tz ? `<div style="font-size: 0.8em; color: var(--text-secondary); margin-top: 4px;">Ora locale ${arrInfo.city}</div>` : ''}
                             </div>
                         </div>
                     </div>
